@@ -1,0 +1,14 @@
+D:\School\2013 - 2014\Game Design 2\GD2-2\GameDesign 2\GameDesign 2\bin\WindowsGL\Debug\SDL.dll
+D:\School\2013 - 2014\Game Design 2\GD2-2\GameDesign 2\GameDesign 2\bin\WindowsGL\Debug\GameDesign 2.exe
+D:\School\2013 - 2014\Game Design 2\GD2-2\GameDesign 2\GameDesign 2\bin\WindowsGL\Debug\GameDesign 2.pdb
+D:\School\2013 - 2014\Game Design 2\GD2-2\GameDesign 2\GameDesign 2\bin\WindowsGL\Debug\Lidgren.Network.dll
+D:\School\2013 - 2014\Game Design 2\GD2-2\GameDesign 2\GameDesign 2\bin\WindowsGL\Debug\MonoGame.Framework.dll
+D:\School\2013 - 2014\Game Design 2\GD2-2\GameDesign 2\GameDesign 2\bin\WindowsGL\Debug\OpenTK.dll
+D:\School\2013 - 2014\Game Design 2\GD2-2\GameDesign 2\GameDesign 2\bin\WindowsGL\Debug\Tao.Sdl.dll
+D:\School\2013 - 2014\Game Design 2\GD2-2\GameDesign 2\GameDesign 2\obj\x86\Debug\GameDesign 2.csprojResolveAssemblyReference.cache
+D:\School\2013 - 2014\Game Design 2\GD2-2\GameDesign 2\GameDesign 2\obj\x86\Debug\GameDesign 2.exe
+D:\School\2013 - 2014\Game Design 2\GD2-2\GameDesign 2\GameDesign 2\obj\x86\Debug\GameDesign 2.pdb
+D:\School\2013 - 2014\Game Design 2\GD2-2\GameDesign 2\GameDesign 2\bin\WindowsGL\Debug\Content\circle.xnb
+D:\School\2013 - 2014\Game Design 2\GD2-2\GameDesign 2\GameDesign 2\bin\WindowsGL\Debug\Content\GDFont.xnb
+D:\School\2013 - 2014\Game Design 2\GD2-2\GameDesign 2\GameDesign 2\bin\WindowsGL\Debug\Content\MyFont.xnb
+D:\School\2013 - 2014\Game Design 2\GD2-2\GameDesign 2\GameDesign 2\bin\WindowsGL\Debug\Content\square.xnb
