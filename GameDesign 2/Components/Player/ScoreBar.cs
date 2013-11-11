@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using GameDesign_2.Screens;
 using Microsoft.Xna.Framework;
 
 namespace GameDesign_2.Components.Player
@@ -74,6 +75,15 @@ namespace GameDesign_2.Components.Player
 
                 Score += gain;
                 toAdd -= gain;
+            }
+
+            if (Score <= 0)
+            {
+                (GDGame.GetActiveScreen() as GameplayScreen).GameOver();
+            }
+            else if (Score >= goalScore)
+            {
+                (GDGame.GetActiveScreen() as GameplayScreen).Won();
             }
 
             //Lastly the timer.

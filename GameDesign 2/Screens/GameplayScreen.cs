@@ -71,5 +71,15 @@ namespace GameDesign_2.Screens
 
             base.Unload();
         }
+
+        internal void GameOver()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void Won()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
