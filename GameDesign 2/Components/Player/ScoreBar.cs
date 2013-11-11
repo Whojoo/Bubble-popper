@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using GameDesign_2.Screens;
@@ -19,17 +20,24 @@ namespace GameDesign_2.Components.Player
     {
         //Drop the score by 5% after 10 seconds.
         private const int SecondsPerPointDrop = 10;
-        private const int PercentDropByTimeBorder = 5;
+        private const int PercentDropByTimeBorder = 1;
 
         //Bar colors.
-        private const Color Background = Color.Black;
-        private const Color PointLoss = new Color(new Vector3(150, 0, 0));      //Red.
-        private const Color PointGain = new Color(new Vector3(0, 150, 0));      //Green.
-        private const Color PointBalance = new Color(new Vector3(0, 0, 150));   //Blue.
+        private readonly Color Background = Color.Black;
+        private readonly Color PointLoss = new Color(new Vector3(150, 0, 0));      //Red.
+        private readonly Color PointGain = new Color(new Vector3(0, 150, 0));      //Green.
+        private readonly Color PointBalance = new Color(new Vector3(0, 0, 150));   //Blue.
+
+        //Bar scale constant.
+        private readonly Vector2 ColorBarScale = new Vector2(0.98f, 0.75f);
+
+        //Pixel constant.
+        private const int TextureSize = 100;
 
         private readonly int PercentPerSecond;
 
         public int Score { get; private set; }
+        private ScoreState State { get; set; }
 
         private int toAdd;
         private int toSubtract;
@@ -38,6 +46,7 @@ namespace GameDesign_2.Components.Player
         private float timeLeft;
         private Texture2D texture;
         private bool isTimeLimited = false;
+        private Vector2 scale;
         
         /// <summary>
         /// Basic ScoreBar with no time limit.
@@ -47,11 +56,8 @@ namespace GameDesign_2.Components.Player
         public ScoreBar(Game1 game, int goalScore)
             : base(game, Shape.None, SetPosition(game), SetHalfSize(game))
         {
-            toAdd = 0;
-            toSubtract = 0;
             this.goalScore = goalScore;
-            PercentPerSecond = (int)(goalScore * 0.01f);
-            Score = 0;
+            PercentPerSecond = (int)(goalScore * 0.1f);
         }
 
         /// <summary>
@@ -69,6 +75,21 @@ namespace GameDesign_2.Components.Player
             {
                 timeLeft = timeLimit;
             }
+        }
+
+        public override void Initialize()
+        {
+            Score = 1;
+            //toAdd = 0;
+            toSubtract = 0;
+
+            State = ScoreState.Balance;
+
+            float xScale = HalfSize.X / TextureSize;
+            float yScale = HalfSize.Y / TextureSize;
+            scale = new Vector2(xScale, yScale);
+
+            base.Initialize();
         }
 
         protected override void LoadContent()
@@ -96,6 +117,11 @@ namespace GameDesign_2.Components.Player
             toAdd += amount;
         }
 
+        public float GetScorePercentage()
+        {
+            return (float)Score / (float)goalScore * 100;
+        }
+
         /// <summary>
         /// Subtracts score over time. The amount is added to a pile which slowly becomes less.
         /// Score subtraction has priority over addition.
@@ -109,6 +135,8 @@ namespace GameDesign_2.Components.Player
             }
 
             toSubtract += amount;
+
+            State = ScoreState.Loss;
         }
 
         /// <summary>
@@ -120,7 +148,7 @@ namespace GameDesign_2.Components.Player
         {
             Viewport vp = game.GraphicsDevice.Viewport;
             float halfWidth = vp.Width * 0.5f * 0.8f;
-            float halfHeight = vp.Height * 19 / 20;
+            float halfHeight = vp.Height * 1 / 20;
 
             return new Vector2(halfWidth, halfHeight);
         }
@@ -150,7 +178,12 @@ namespace GameDesign_2.Components.Player
             //Are there points to subtract?
             if (toSubtract > 0)
             {
-                int loss = pointsThisFrame < toSubtract ? pointsThisFrame : toSubtract;
+                int loss = pointsThisFrame;
+                if (toSubtract < pointsThisFrame)
+                {
+                    loss = toSubtract;
+                    State = ScoreState.Balance;
+                }
 
                 Score -= loss;
                 toSubtract -= loss;
@@ -158,13 +191,22 @@ namespace GameDesign_2.Components.Player
             //Are there points to add?
             else if (toAdd > 0)
             {
-                int gain = pointsThisFrame < toAdd ? pointsThisFrame : toAdd;
+                State = ScoreState.Gain;
+                int gain = pointsThisFrame;
+
+                if (toAdd < pointsThisFrame)
+                {
+                    gain = toAdd;
+                    State = ScoreState.Balance;
+                }
 
                 Score += gain;
                 toAdd -= gain;
             }
 
-            //Check if reahed any score border.
+            Debug.WriteLine(Score);
+
+            //Check if reached any score border.
             if (Score <= 0)
             {
                 (GDGame.GetActiveScreen() as GameplayScreen).GameOver();
@@ -194,11 +236,53 @@ namespace GameDesign_2.Components.Player
             base.Update(gameTime);
         }
 
+        public override void Draw(GameTime gameTime, SpriteBatch batch)
+        {
+            const float rotation = 0;
+            const float depth = 0;
+            const SpriteEffects effect = SpriteEffects.None;
+
+            //First the background.
+            batch.Draw(texture, Position, null, Background, rotation, Origin, scale, effect, depth);
+
+            //Now the bar's color.
+            Color color;
+            switch (State)
+            {
+                case ScoreState.Gain:
+                    color = PointGain;
+                    break;
+                case ScoreState.Loss:
+                    color = PointLoss;
+                    break;
+                default:
+                    color = PointBalance;
+                    break;
+            }
+
+            //Get the right source rectangle.
+            float xScale = GetScorePercentage() * 0.01f * TextureSize;
+            Rectangle rect = new Rectangle(0, 0, (int)xScale, TextureSize);
+
+            //Now draw the bar.
+            batch.Draw(texture, Position, rect, color, rotation, Origin, 
+                scale * ColorBarScale, effect, depth);
+
+            base.Draw(gameTime, batch);
+        }
+
         public override void Unload()
         {
             texture.Dispose();
 
             base.Unload();
         }
+    }
+
+    enum ScoreState
+    {
+        Loss,
+        Gain,
+        Balance
     }
 }

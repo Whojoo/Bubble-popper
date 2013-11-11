@@ -45,7 +45,10 @@ namespace GameDesign_2.Screens
             {
                 Components.Add(new ScoreBall(GDGame, new Vector2(0, 100), sin.GetRandomIndex()));
             }
-            
+
+            ScoreBar bar;
+            HuDComponents.Add(bar = new ScoreBar(GDGame, 5000000));
+            bar.AddScore(5000000);
 
             base.Initialize();
         }

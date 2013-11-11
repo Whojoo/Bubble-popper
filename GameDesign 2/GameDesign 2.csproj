@@ -38,6 +38,7 @@
     <Compile Include="Components\Ball.cs" />
     <Compile Include="Camera2D.cs" />
     <Compile Include="Components\Player\PlayerBall.cs" />
+    <Compile Include="Components\Player\ScoreBar.cs" />
     <Compile Include="Components\ScoreBall.cs" />
     <Compile Include="Components\SpawnPortal.cs" />
     <Compile Include="Components\Wall.cs" />

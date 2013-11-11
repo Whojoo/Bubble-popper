@@ -90,7 +90,6 @@ namespace GameDesign_2
         {
             Random randomizer = new Random();
             int ran = randomizer.Next(size - 1);
-            Debug.WriteLine(ran);
             return ran;
         }
 
