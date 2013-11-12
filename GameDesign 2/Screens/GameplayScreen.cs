@@ -29,7 +29,10 @@ namespace GameDesign_2.Screens
         public override void Initialize()
         {
             Components.Add(Player = new PlayerBall(GDGame, new Vector2(300, 300)));
-            Components.Add(new Wall(GDGame, new Vector2(500, 25), new Vector2(100, 50)));
+            Components.Add(new Wall(GDGame, new Vector2(0, 0), new Vector2(1280, 50)));
+            Components.Add(new Wall(GDGame, new Vector2(1230, 50), new Vector2(1280, 720)));
+            Components.Add(new Wall(GDGame, new Vector2(0, 670), new Vector2(1230, 720)));
+            Components.Add(new Wall(GDGame, new Vector2(0, 50), new Vector2(50, 670)));
 
             //Add sinusoid graphs.
             Sinusoid sin = Sinusoid.GetInstance();
@@ -38,18 +41,34 @@ namespace GameDesign_2.Screens
             int xOffset = 0;
 
             sin.AddGraph(period, xOffset++, amplitude);
-            xOffset *= 2;
+            //xOffset *= 2;
             sin.AddGraph(period, xOffset++, amplitude);
-            xOffset *= 2;
+            //xOffset *= 2;
             sin.AddGraph(period, xOffset++, amplitude);
-            xOffset *= 2;
+            //xOffset *= 2;
             sin.AddGraph(period, xOffset++, amplitude);
-            xOffset *= 2;
+            //xOffset *= 2;
+            sin.AddGraph(period, xOffset++, amplitude);
+            sin.AddGraph(period, xOffset++, amplitude);
+            sin.AddGraph(period, xOffset++, amplitude);
+            sin.AddGraph(period, xOffset++, amplitude);
+            sin.AddGraph(period, xOffset++, amplitude);
+            sin.AddGraph(period, xOffset++, amplitude);
             sin.AddGraph(period, xOffset++, amplitude);
 
-            for (int i = 0; i < 500; i++)
+            Random randy = new Random(200);
+
+            for (int i = 0; i < 2000; i++)
             {
-                Components.Add(new ScoreBall(GDGame, new Vector2(0, 100), sin.GetRandomIndex()));
+                Vector2 position = new Vector2(randy.Next(100, 900), randy.Next(100, 600));
+                ScoreBall ball;
+                Components.Add(ball = new ScoreBall(GDGame, position, randy.Next(0, 10)));
+
+                if (randy.Next(2, 5) > 3)
+                {
+                    ball.ReverseXMovement();
+                    ball.ReverseYMovement();
+                }
             }
 
             ScoreBar bar;
@@ -74,25 +93,31 @@ namespace GameDesign_2.Screens
 
             //Update collision after the initial updates.
             //Clear and refill the quadtree.
-            //quadTree.Clear();
-            //quadTree.Insert(Components);
-
+            quadTree.Clear();
+            quadTree.Insert(Components);
+            
             ////Now loop through all objects.
-            //List<GDComp> possibleColliders = new List<GDComp>();
-            //for (int i = Components.Count - 1; i >= 0; i--)
-            //{
-            //    //Cast the current component;
-            //    GDComp comp = Components[i] as GDComp;
+            List<GDComp> possibleColliders = new List<GDComp>();
+            for (int i = 0; i < Components.Count; i++)
+            {
+                //Cast the current component;
+                GDComp comp = Components[i] as GDComp;
 
-            //    //Clear the old list and refill it.
-            //    possibleColliders.Clear();
-            //    quadTree.GetPossibleColliders(possibleColliders, 
-            //        comp.GetRect());
+                //Clear the old list and refill it.
+                possibleColliders.Clear();
+                quadTree.GetPossibleColliders(possibleColliders, 
+                    comp.GetRect());
 
-            //    //Now loop through the possibleColliders for collisions.
-            //    for (int j = 
-            //}
-
+                //Now loop through the possibleColliders for collisions.
+                for (int j = 0; j < possibleColliders.Count; j++)
+                {
+                    if (!comp.Equals(possibleColliders[j]))
+                    {
+                        comp.CheckCollisionWith(gameTime, possibleColliders[j]);
+                    }
+                }
+            }
+            
             for (int i = Components.Count - 1; i >= 0; i--)
             {
                 if ((Components[i] as GDComp).Remove)
@@ -112,12 +137,10 @@ namespace GameDesign_2.Screens
 
         internal void GameOver()
         {
-            throw new NotImplementedException();
         }
 
         internal void Won()
         {
-            throw new NotImplementedException();
         }
     }
 }

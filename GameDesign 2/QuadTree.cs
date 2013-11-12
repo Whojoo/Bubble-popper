@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using GameDesign_2.Components;
@@ -30,7 +31,7 @@ namespace GameDesign_2
 
         //Node constants.
         private const int MaxLevel = 10;
-        private const int MaxLeaves = 5;
+        private const int MaxLeaves = 1;
         private const int Nodes = 4;
 
         //Readonly bounds.
@@ -71,7 +72,7 @@ namespace GameDesign_2
         public void Clear()
         {
             //Do we have any sub-notes?
-            if (nodes != null)
+            if (nodes[0] != null)
             {
                 //Clear all sub-notes.
                 for (int i = 0; i < Nodes; i++)
@@ -97,7 +98,7 @@ namespace GameDesign_2
             //Does the object fit completely on the top OR bottom side?
             bool isInTop = rect.Y + rect.Height < yMid;
             bool isInBottom = rect.Y > yMid;
-            if (isInTop ^ isInBottom)
+            if (!(isInTop ^ isInBottom))
             {
                 //If not, early out.
                 return NotInJustOneChildNode;

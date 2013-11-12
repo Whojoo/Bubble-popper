@@ -109,6 +109,12 @@ namespace GameDesign_2.Components
                             ScoreBall temp = other as ScoreBall;
                             temp.ReverseXMovement();
                         }
+                        else
+                        {
+                            //Reverse the y movement.
+                            ScoreBall temp = other as ScoreBall;
+                            temp.ReverseYMovement();
+                        }
                     }
 
                 }
@@ -122,7 +128,8 @@ namespace GameDesign_2.Components
         {
             float rotation = 0;
             float depth = 0;
-            batch.Draw(wall, Position, null, Color.White, rotation, Origin, scaleCorrection, 
+            Color colo = new Color(Color.Black, 0.05f);
+            batch.Draw(wall, Position, null, colo, rotation, Origin, scaleCorrection, 
                 SpriteEffects.None, depth);
 
             base.Draw(gameTime, batch);

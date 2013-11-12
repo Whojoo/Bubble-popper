@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GameDesign_2.Text;
+using Microsoft.Xna.Framework;
 
 namespace GameDesign_2.Screens.MenuScreens
 {
@@ -20,7 +21,7 @@ namespace GameDesign_2.Screens.MenuScreens
         protected override void EntryClicked(int index)
         {
             Manager.Pop();
-            Manager.Push(new GameplayScreen(GDGame));
+            Manager.Push(new GameplayScreen(GDGame, new Vector2(1280, 720)));
         }
     }
 }

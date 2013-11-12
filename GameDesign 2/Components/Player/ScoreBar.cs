@@ -204,8 +204,6 @@ namespace GameDesign_2.Components.Player
                 toAdd -= gain;
             }
 
-            Debug.WriteLine(Score);
-
             //Check if reached any score border.
             if (Score <= 0)
             {
@@ -269,7 +267,8 @@ namespace GameDesign_2.Components.Player
                 scale * ColorBarScale, effect, depth);
 
             base.Draw(gameTime, batch);
-        }
+        }
+
 
         public override void Unload()
         {

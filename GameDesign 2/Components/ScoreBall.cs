@@ -10,20 +10,20 @@ namespace GameDesign_2.Components
     {
         private const float Speed = 100;
         private int sinusoidIndex;
-        private int reverseIndex;
+        private Vector2 reverseIndex;
 
         public ScoreBall(Game1 game, Vector2 position, int sinusoidIndex)
             : base(game, position, 10)
         {
             this.sinusoidIndex = sinusoidIndex;
-            reverseIndex = 1;
+            reverseIndex = new Vector2(1, 1);
         }
 
         private void AdjustVelocity()
         {
             //Add a steering to the velocity. ReverseIndex decides if this goes left or right.
-            Vector2 steeringVel = new Vector2(Speed * reverseIndex,
-                Sinusoid.GetInstance().GetSinusoid(sinusoidIndex) * Speed);
+            Vector2 steeringVel = new Vector2(Speed * reverseIndex.X,
+                Sinusoid.GetInstance().GetSinusoid(sinusoidIndex) * Speed * reverseIndex.Y);
 
             Velocity += steeringVel;
         }
@@ -54,7 +54,12 @@ namespace GameDesign_2.Components
 
         public void ReverseXMovement()
         {
-            reverseIndex *= -1;
+            reverseIndex.X *= -1;
+        }
+
+        public void ReverseYMovement()
+        {
+
         }
 
         public override void Update(GameTime gameTime)
