@@ -53,6 +53,7 @@
     <Compile Include="LineSegment.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuadTree.cs" />
     <Compile Include="Screens\GameplayScreen.cs" />
     <Compile Include="Screens\MenuScreens\MainMenuScreen.cs" />
     <Compile Include="Screens\Screen.cs" />
