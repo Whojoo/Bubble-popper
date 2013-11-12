@@ -137,6 +137,15 @@ namespace GameDesign_2.Components
             return distSQ < radiiSQ;
         }
 
+        public Rectangle GetRect()
+        {
+            return new Rectangle(
+                (int)(Position.X - HalfSize.X),
+                (int)(Position.Y - HalfSize.Y),
+                (int)(HalfSize.X * 2),
+                (int)(HalfSize.Y * 2));
+        }
+
         public override void Update(GameTime gameTime)
         {
         }
