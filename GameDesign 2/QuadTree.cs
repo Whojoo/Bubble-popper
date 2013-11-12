@@ -82,26 +82,6 @@ namespace GameDesign_2
             leaves.Clear();
         }
 
-        /// <summary>
-        /// Get all leaf objects from this node and the child nodes.
-        /// </summary>
-        public List<GDComp> GetAll(List<GDComp> returnList)
-        {
-            //Add this node's leaves.
-            returnList.AddRange(leaves);
-
-            //Add child node's leaves.
-            if (nodes[0] != null)
-            {
-                for (int i = 0; i < Nodes; i++)
-                {
-                    nodes[i].GetAll(returnList);
-                }
-            }
-
-            return returnList;
-        }
-
         public int GetIndex(Rectangle rect)
         {
             //The constant if the object doesn't completely fit in a child node.
@@ -149,27 +129,6 @@ namespace GameDesign_2
 
             //If all fails, then it fits multiple rects, return -1.
             return NotInJustOneChildNode;
-        }
-
-        /// <summary>
-        /// Get all the leaf objects from a node's quadrant.
-        /// The TopLeft quadrant also gives this node's leaf objects.
-        /// </summary>
-        /// <param name="index">The Quadrant's index.</param>
-        public List<GDComp> GetQuadrant(Index index, List<GDComp> returnList)
-        {
-            if (index == Index.TopLeft)
-            { //Add this node's leaves if the given index is TopLeft.
-                returnList.AddRange(leaves);
-            }
-
-            if (nodes[0] != null)
-            { //Get all other objects in the asked quadrant.
-                nodes[(int)index].GetAll(returnList);
-            }
-
-            //Return the list.
-            return returnList;
         }
 
         /// <summary>
@@ -267,28 +226,6 @@ namespace GameDesign_2
                 x + hw, y + hh, hw, hh));
             nodes[(int)Index.TopRight] = new QuadTree(newLevel, new Rectangle(
                 x + hw, y, hw, hh));
-        }
-
-        /// <summary>
-        /// Update's a single quadrant.
-        /// This method is Thread safe. The top node's leaves can only be reached with the TopLeft index.
-        /// To use this method in a thread:
-        /// Thread t = new Thread(o => UpdateQuadrant(gameTime, index);
-        /// t.Start();
-        /// </summary>
-        /// <param name="gameTime">The game's timing mechanism.</param>
-        /// <param name="index">The quadrant's index. TopLeft also takes the top node's leaves.</param>
-        public void UpdateQuadrant(GameTime gameTime, Index index)
-        {
-            //Create the list and get all the leaves.
-            List<GDComp> toUpdate = new List<GDComp>();
-            GetQuadrant(index, toUpdate);
-
-            //Update the leaves.
-            for (int i = toUpdate.Count - 1; i >= 0; i--)
-            {
-                toUpdate[i].Update(gameTime);
-            }
         }
     }
 }
