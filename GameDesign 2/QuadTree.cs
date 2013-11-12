@@ -172,6 +172,10 @@ namespace GameDesign_2
             return returnList;
         }
 
+        /// <summary>
+        /// Insert a component in the tree.
+        /// </summary>
+        /// <param name="comp"></param>
         public void Insert(GDComp comp)
         {
             //Get the rectangle to work with.
@@ -190,6 +194,55 @@ namespace GameDesign_2
                     return;
                 }
             }
+
+            //Object doesnt fit in a child, add it to this leaf.
+            leaves.Add(comp);
+
+            //Do we need to split?
+            if (level < MaxLevel && leaves.Count > MaxLeaves)
+            {
+                Split();
+
+                int i = 0;
+
+                while (i < leaves.Count)
+                {
+                    Rectangle tempRect = leaves[i].GetRect();
+                    int index = GetIndex(tempRect);
+
+                    //Does the object fit in a child node?
+                    if (index != -1)
+                    {
+                        //Replace the object to the child node.
+                        nodes[index].Insert(leaves[i]);
+                        leaves.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get all possible colliders for a certain object.
+        /// </summary>
+        /// <param name="returnList">The list that will contain all the possible colliders.</param>
+        /// <param name="rect">The source object's rectangle.</param>
+        public List<GDComp> GetPossibleColliders(List<GDComp> returnList, Rectangle rect)
+        {
+            //First check child nodes.
+            int index = GetIndex(rect);
+            if (index != -1 && nodes[0] != null)
+            {
+                nodes[index].GetPossibleColliders(returnList, rect);
+            }
+
+            //Now add this node's leaves.
+            returnList.AddRange(leaves);
+
+            return returnList;
         }
 
         /// <summary>
