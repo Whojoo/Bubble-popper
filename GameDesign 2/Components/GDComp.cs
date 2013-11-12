@@ -11,6 +11,7 @@ namespace GameDesign_2.Components
     {
         public Game1 GDGame { get; private set; }
         public Shape Shape { get; private set; }
+        public bool Remove { get; set; }
 
         protected Vector2 Origin { get; set; }
 
@@ -26,6 +27,7 @@ namespace GameDesign_2.Components
             HalfSize = halfSize;
             Position = position;
             velocity = new Vector2();
+            Remove = false;
         }
 
         public override void Initialize()

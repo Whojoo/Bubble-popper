@@ -106,7 +106,7 @@ namespace GameDesign_2.Screens
                 gc.Update(gameTime);
             }
 
-            UpdateCollider(gameTime);
+            //UpdateCollider(gameTime);
 
             foreach (GDComp gc in this.HuDComponents.OfType<GDComp>().Where<GDComp>(x => x.Enabled).OrderBy<IUpdateable, int>(x => x.UpdateOrder))
             {

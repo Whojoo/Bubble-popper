@@ -191,7 +191,7 @@ namespace GameDesign_2
         /// Inserts a list of components into the tree.
         /// </summary>
         /// <param name="components">A list of components which implements IList</param>
-        public void Insert(IList<GDComp> components)
+        public void Insert(IList<IGameComponent> components)
         {
             foreach (GDComp comp in components)
             {

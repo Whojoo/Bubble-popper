@@ -15,9 +15,15 @@ namespace GameDesign_2.Screens
     {
         public PlayerBall Player { get; protected set; }
 
-        public GameplayScreen(Game1 game)
+        private QuadTree quadTree;
+        private Vector2 worldSize;
+
+        public GameplayScreen(Game1 game, Vector2 worldSize)
             : base(game)
         {
+            this.worldSize = worldSize;
+            quadTree = new QuadTree(new Rectangle(
+                0, 0, (int)worldSize.X, (int)worldSize.Y));
         }
 
         public override void Initialize()
@@ -65,6 +71,35 @@ namespace GameDesign_2.Screens
             }
 
             base.Update(gameTime);
+
+            //Update collision after the initial updates.
+            //Clear and refill the quadtree.
+            //quadTree.Clear();
+            //quadTree.Insert(Components);
+
+            ////Now loop through all objects.
+            //List<GDComp> possibleColliders = new List<GDComp>();
+            //for (int i = Components.Count - 1; i >= 0; i--)
+            //{
+            //    //Cast the current component;
+            //    GDComp comp = Components[i] as GDComp;
+
+            //    //Clear the old list and refill it.
+            //    possibleColliders.Clear();
+            //    quadTree.GetPossibleColliders(possibleColliders, 
+            //        comp.GetRect());
+
+            //    //Now loop through the possibleColliders for collisions.
+            //    for (int j = 
+            //}
+
+            for (int i = Components.Count - 1; i >= 0; i--)
+            {
+                if ((Components[i] as GDComp).Remove)
+                {
+                    Components.RemoveAt(i);
+                }
+            }
         }
 
         public override void Unload()
