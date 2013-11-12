@@ -60,9 +60,52 @@ namespace GameDesign_2
         {
         }
 
+        /// <summary>
+        /// Clears this node and all it's child nodes.
+        /// If this is the Top node, then the entire tree gets cleared.
+        /// The Top node is still available for use.
+        /// </summary>
+        public void Clear()
+        {
+            //Do we have any sub-notes?
+            if (nodes != null)
+            {
+                //Clear all sub-notes.
+                for (int i = 0; i < Nodes; i++)
+                {
+                    nodes[i].Clear();
+                    nodes[i] = null;
+                }
+            }
+
+            //Now clear this node's stuff.
+            leaves.Clear();
+        }
+
+        /// <summary>
+        /// Get all leaf objects from this node and the child nodes.
+        /// </summary>
+        public List<GDComp> GetAll(List<GDComp> returnList)
+        {
+            //Add this node's leaves.
+            returnList.AddRange(leaves);
+
+            //Add child node's leaves.
+            if (nodes[0] != null)
+            {
+                for (int i = 0; i < Nodes; i++)
+                {
+                    nodes[i].GetAll(returnList);
+                }
+            }
+
+            return returnList;
+        }
+
         public int GetIndex(Rectangle rect)
         {
-            int index = -1;
+            //The constant if the object doesn't completely fit in a child node.
+            const int NotInJustOneChildNode = -1;
 
             //Get this node's X and Y center point.
             float xMid = Bounds.X + Bounds.Width * 0.5f;
@@ -74,7 +117,7 @@ namespace GameDesign_2
             if (isInTop ^ isInBottom)
             {
                 //If not, early out.
-                return index;
+                return NotInJustOneChildNode;
             }
 
             //Is the object completely on the left side?
@@ -105,27 +148,7 @@ namespace GameDesign_2
             }
 
             //If all fails, then it fits multiple rects, return -1.
-            return index;
-        }
-
-        /// <summary>
-        /// Get all leaf objects from this node and the child nodes.
-        /// </summary>
-        public List<GDComp> GetAll(List<GDComp> returnList)
-        {
-            //Add this node's leaves.
-            returnList.AddRange(leaves);
-
-            //Add child node's leaves.
-            if (nodes[0] != null)
-            {
-                for (int i = 0; i < Nodes; i++)
-                {
-                    nodes[i].GetAll(returnList);
-                }
-            }
-
-            return returnList;
+            return NotInJustOneChildNode;
         }
 
         /// <summary>
@@ -147,6 +170,50 @@ namespace GameDesign_2
 
             //Return the list.
             return returnList;
+        }
+
+        public void Insert(GDComp comp)
+        {
+            //Get the rectangle to work with.
+            Rectangle rect = comp.GetRect();
+
+            //Do we have any child node?
+            if (nodes[0] != null)
+            {
+                int index = GetIndex(rect);
+
+                //Does it fit completely in a child node?
+                if (index != -1)
+                {
+                    //Insert it in a child node and return afterwards.
+                    nodes[index].Insert(comp);
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates the 4 child nodes.
+        /// </summary>
+        private void Split()
+        {
+            //Calculate the half width and half height.
+            int hw = (int)(Bounds.Width * 0.5f);
+            int hh = (int)(Bounds.Height * 0.5f);
+
+            int x = Bounds.X;
+            int y = Bounds.Y;
+            int newLevel = level + 1;
+
+            //Create the 4 new nodes.
+            nodes[(int)Index.TopLeft] = new QuadTree(newLevel, new Rectangle(
+                x, y, hw, hh));
+            nodes[(int)Index.BottomLeft] = new QuadTree(newLevel, new Rectangle(
+                x, y + hh, hw, hh));
+            nodes[(int)Index.BottomRight] = new QuadTree(newLevel, new Rectangle(
+                x + hw, y + hh, hw, hh));
+            nodes[(int)Index.TopRight] = new QuadTree(newLevel, new Rectangle(
+                x + hw, y, hw, hh));
         }
 
         /// <summary>
