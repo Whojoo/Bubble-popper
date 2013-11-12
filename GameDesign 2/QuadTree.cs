@@ -9,6 +9,9 @@ namespace GameDesign_2
 {
     /// <summary>
     /// A simple Quad Tree used for both updating and collision detection.
+    /// Use Clear just before the collision checks followed by Insert on all objects.
+    /// This way you keep the tree updated.
+    /// 
     /// Huge thanks to Steven Lambert.
     /// Link: http://gamedev.tutsplus.com/tutorials/implementation/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space/
     /// </summary>
@@ -77,7 +80,7 @@ namespace GameDesign_2
                     nodes[i] = null;
                 }
             }
-
+            
             //Now clear this node's stuff.
             leaves.Clear();
         }
@@ -181,6 +184,18 @@ namespace GameDesign_2
                         i++;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Inserts a list of components into the tree.
+        /// </summary>
+        /// <param name="components">A list of components which implements IList</param>
+        public void Insert(IList<GDComp> components)
+        {
+            foreach (GDComp comp in components)
+            {
+                Insert(comp);
             }
         }
 
