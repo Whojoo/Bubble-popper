@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 namespace GameDesign_2
 {
     /// <summary>
-    /// A simple Quad Tree used for both updating and collision detection.
+    /// A simple Quad Tree used for collision detection.
     /// Use Clear just before the collision checks followed by Insert on all objects.
     /// This way you keep the tree updated.
     /// 
