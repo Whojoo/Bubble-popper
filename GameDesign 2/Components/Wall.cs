@@ -15,12 +15,14 @@ namespace GameDesign_2.Components
         private Texture2D wall;
         private Vector2 scaleCorrection;
 
-        public Wall(Game1 game, Vector2 topLeft, Vector2 halfSize)
-            : base(game, Shape.Box, topLeft + halfSize, halfSize)
+        public Wall(Game1 game, Vector2 topLeft, Vector2 bottomRight)
+            : base(game, Shape.Box, 
+            (topLeft + bottomRight) * 0.5f, 
+            (bottomRight - topLeft) * 0.5f)
         {
             scaleCorrection = new Vector2();
-            scaleCorrection.X += halfSize.X * 2 / PNGSize;
-            scaleCorrection.Y += halfSize.Y * 2 / PNGSize;
+            scaleCorrection.X += HalfSize.X * 2 / PNGSize;
+            scaleCorrection.Y += HalfSize.Y * 2 / PNGSize;
             wall = new Texture2D(game.GraphicsDevice, 100, 100);
         }
 
@@ -128,7 +130,7 @@ namespace GameDesign_2.Components
         {
             float rotation = 0;
             float depth = 0;
-            Color colo = new Color(Color.Black, 0.05f);
+            Color colo = Color.White;
             batch.Draw(wall, Position, null, colo, rotation, Origin, scaleCorrection, 
                 SpriteEffects.None, depth);
 
