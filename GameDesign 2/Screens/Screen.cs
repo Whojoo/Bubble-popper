@@ -139,7 +139,7 @@ namespace GameDesign_2.Screens
         {
             // Major credits to Nils Dijk:
             Matrix transform = GDGame.Camera.GetView();
-
+            
             //Regular components. Need to be transformed.
             Batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, transform);
             foreach (GDComp gc in this.Components.OfType<GDComp>().Where<GDComp>(x => x.Visible).OrderBy<GDComp, int>(x => x.DrawOrder))

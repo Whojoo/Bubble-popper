@@ -7,6 +7,7 @@ using GameDesign_2.Components;
 using GameDesign_2.Components.Player;
 using GameDesign_2.Screens.MenuScreens;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace GameDesign_2.Screens
@@ -14,9 +15,12 @@ namespace GameDesign_2.Screens
     public class GameplayScreen : Screen
     {
         public PlayerBall Player { get; protected set; }
+        private bool debugMode = false;
+        private Texture2D quadTreeTex;
 
         private QuadTree quadTree;
         private Vector2 worldSize;
+        private MouseState lastMouse;
 
         public GameplayScreen(Game1 game, Vector2 worldSize)
             : base(game)
@@ -36,33 +40,21 @@ namespace GameDesign_2.Screens
 
             //Add sinusoid graphs.
             Sinusoid sin = Sinusoid.GetInstance();
-            const float amplitude = 1;
-            const float period = 2.5f;
-            int xOffset = 0;
-
-            sin.AddGraph(period, xOffset++, amplitude);
-            //xOffset *= 2;
-            sin.AddGraph(period, xOffset++, amplitude);
-            //xOffset *= 2;
-            sin.AddGraph(period, xOffset++, amplitude);
-            //xOffset *= 2;
-            sin.AddGraph(period, xOffset++, amplitude);
-            //xOffset *= 2;
-            sin.AddGraph(period, xOffset++, amplitude);
-            sin.AddGraph(period, xOffset++, amplitude);
-            sin.AddGraph(period, xOffset++, amplitude);
-            sin.AddGraph(period, xOffset++, amplitude);
-            sin.AddGraph(period, xOffset++, amplitude);
-            sin.AddGraph(period, xOffset++, amplitude);
-            sin.AddGraph(period, xOffset++, amplitude);
 
             Random randy = new Random(200);
+            const int sinusoids = 20;
+            for (int i = 0; i < sinusoids; i++)
+            {
+                sin.AddGraph((float)randy.NextDouble() + 2.0f, i, (float)randy.NextDouble() + 0.5f);
+            }
 
-            for (int i = 0; i < 2000; i++)
+            lastMouse = Mouse.GetState();
+
+            for (int i = 0; i < 50; i++)
             {
                 Vector2 position = new Vector2(randy.Next(100, 900), randy.Next(100, 600));
                 ScoreBall ball;
-                Components.Add(ball = new ScoreBall(GDGame, position, randy.Next(0, 10)));
+                Components.Add(ball = new ScoreBall(GDGame, position, randy.Next(0, sinusoids)));
 
                 if (randy.Next(2, 5) > 3)
                 {
@@ -78,6 +70,13 @@ namespace GameDesign_2.Screens
             base.Initialize();
         }
 
+        protected override void LoadContent()
+        {
+            quadTreeTex = Content.Load<Texture2D>("square");
+
+            base.LoadContent();
+        }
+
         public override void Update(GameTime gameTime)
         {
             //Update the sinusoid graphs.
@@ -89,13 +88,23 @@ namespace GameDesign_2.Screens
                 Manager.Push(new MainMenuScreen(GDGame));
             }
 
+            //if (Mouse.GetState().RightButton == ButtonState.Pressed &&
+            //    lastMouse.RightButton == ButtonState.Released)
+            //{
+            //    ScoreBall temp;
+            //    Components.Add(temp = new ScoreBall(GDGame, Player.Position, 0));
+            //    temp.Initialize();
+            //    quadTree.Insert(temp);
+            //}
+            //lastMouse = Mouse.GetState();
+
             base.Update(gameTime);
 
             //Update collision after the initial updates.
             //Clear and refill the quadtree.
             quadTree.Clear();
             quadTree.Insert(Components);
-            
+
             ////Now loop through all objects.
             List<GDComp> possibleColliders = new List<GDComp>();
             for (int i = 0; i < Components.Count; i++)
@@ -105,7 +114,7 @@ namespace GameDesign_2.Screens
 
                 //Clear the old list and refill it.
                 possibleColliders.Clear();
-                quadTree.GetPossibleColliders(possibleColliders, 
+                quadTree.GetPossibleColliders(possibleColliders,
                     comp.GetRect());
 
                 //Now loop through the possibleColliders for collisions.
@@ -125,6 +134,19 @@ namespace GameDesign_2.Screens
                     Components.RemoveAt(i);
                 }
             }
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            if (debugMode)
+            {
+                Matrix transform = GDGame.Camera.GetView();
+                Batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, transform);
+                quadTree.Draw(Batch, Color.Red, quadTreeTex);
+                Batch.End(); 
+            }
+
+            base.Draw(gameTime);
         }
 
         public override void Unload()
