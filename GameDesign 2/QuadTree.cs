@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using GameDesign_2.Components;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace GameDesign_2
 {
@@ -30,7 +31,7 @@ namespace GameDesign_2
         }
 
         //Node constants.
-        private const int MaxLevel = 10;
+        private const int MaxLevel = 5;
         private const int MaxLeaves = 1;
         private const int Nodes = 4;
 
@@ -242,6 +243,28 @@ namespace GameDesign_2
                 x + hw, y + hh, hw, hh));
             nodes[(int)Index.TopRight] = new QuadTree(newLevel, new Rectangle(
                 x + hw, y, hw, hh));
+        }
+
+        public void Draw(SpriteBatch batch, Color color, Texture2D tex)
+        {
+            if (nodes[0] != null)
+            {
+                for (int i = 0; i < Nodes; i++)
+                {
+                    if (i % 2 == 0)
+                    {
+                        nodes[i].Draw(batch, Color.Red, tex);
+                    }
+                    else
+                    {
+                        nodes[i].Draw(batch, Color.Black, tex);
+                    }
+                }
+            }
+            else
+            {
+                batch.Draw(tex, Bounds, new Color(color, 0.1f));
+            }
         }
     }
 }
