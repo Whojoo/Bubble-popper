@@ -32,7 +32,7 @@ namespace GameDesign_2
 
         //Node constants.
         private const int MaxLevel = 5;
-        private const int MaxLeaves = 1;
+        private const int MaxLeaves = 0;
         private const int Nodes = 4;
 
         //Readonly bounds.
@@ -216,7 +216,10 @@ namespace GameDesign_2
             }
 
             //Now add this node's leaves.
-            returnList.AddRange(leaves);
+            foreach (GDComp comp in leaves)
+            {
+                returnList.Add(comp);
+            }
 
             return returnList;
         }

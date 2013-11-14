@@ -15,7 +15,7 @@ namespace GameDesign_2.Screens
     public class GameplayScreen : Screen
     {
         public PlayerBall Player { get; protected set; }
-        private bool debugMode = false;
+        private bool debugMode = true;
         private Texture2D quadTreeTex;
 
         private QuadTree quadTree;
@@ -76,6 +76,8 @@ namespace GameDesign_2.Screens
 
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
+
             //Update the sinusoid graphs.
             Sinusoid.GetInstance().Update(gameTime);
 
@@ -95,14 +97,16 @@ namespace GameDesign_2.Screens
             //}
             //lastMouse = Mouse.GetState();
 
-            base.Update(gameTime);
 
             //Update collision after the initial updates.
             //Clear and refill the quadtree.
             quadTree.Clear();
-            quadTree.Insert(Components);
+            for (int i = 0; i < Components.Count; i++)
+            {
+                quadTree.Insert((GDComp)Components[i]);
+            }
 
-            ////Now loop through all objects.
+            //Now loop through all objects.
             List<GDComp> possibleColliders = new List<GDComp>();
             for (int i = 0; i < Components.Count; i++)
             {
@@ -113,14 +117,22 @@ namespace GameDesign_2.Screens
                 possibleColliders.Clear();
                 quadTree.GetPossibleColliders(possibleColliders,
                     comp.GetRect());
+                int duplicate = possibleColliders.IndexOf(comp);
 
                 //Now loop through the possibleColliders for collisions.
                 for (int j = 0; j < possibleColliders.Count; j++)
                 {
-                    if (!comp.Equals(possibleColliders[j]))
+                    if (j == duplicate)
                     {
-                        comp.CheckCollisionWith(gameTime, possibleColliders[j]);
+                        continue;
                     }
+                    if (comp is PlayerBall ||
+                        possibleColliders[j] is PlayerBall)
+                    {
+                        Console.WriteLine(possibleColliders.Count);
+                    }
+                    
+                    comp.CheckCollisionWith(gameTime, possibleColliders[j]);
                 }
             }
             
