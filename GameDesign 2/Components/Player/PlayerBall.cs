@@ -12,9 +12,12 @@ namespace GameDesign_2.Components.Player
     {
         private const float PlayerRadius = 30;
 
-        public PlayerBall(Game1 game, Vector2 position)
+        private ScoreBar scoreBar;
+
+        public PlayerBall(Game1 game, Vector2 position, int goalScore)
             : base(game, position, PlayerRadius)
         {
+            scoreBar = new ScoreBar(game, goalScore);
         }
 
         public override void Initialize()
@@ -27,6 +30,11 @@ namespace GameDesign_2.Components.Player
             Mouse.SetPosition((int)center.X, (int)center.Y);
 
             base.Initialize();
+        }
+
+        public void AddScore(int amount)
+        {
+            scoreBar.AddScore(amount);
         }
 
         public override bool CheckCollisionWith(GameTime gameTime, GDComp other)
@@ -69,6 +77,11 @@ namespace GameDesign_2.Components.Player
             //But the player's velocity is equal to real time mouse movement.
             //So to prevent errors, we have to divide the velocity by the elapsed time.
             Velocity /= (float)gameTime.ElapsedGameTime.TotalSeconds;
+        }
+
+        public void SubtractScore(int amount)
+        {
+            scoreBar.SubtractScore(amount);
         }
 
         public override void Update(GameTime gameTime)

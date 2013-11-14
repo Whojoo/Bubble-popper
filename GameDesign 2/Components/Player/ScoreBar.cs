@@ -20,7 +20,7 @@ namespace GameDesign_2.Components.Player
     {
         //Drop the score by 5% after 10 seconds.
         private const int SecondsPerPointDrop = 10;
-        private const int PercentDropByTimeBorder = 1;
+        private const int PercentDropByTimeBorder = 5;
 
         //Bar colors.
         private readonly Color Background = Color.Black;
@@ -57,7 +57,7 @@ namespace GameDesign_2.Components.Player
             : base(game, Shape.None, SetPosition(game), SetHalfSize(game))
         {
             this.goalScore = goalScore;
-            PercentPerSecond = (int)(goalScore * 0.1f);
+            PercentPerSecond = (int)(goalScore * 0.05f);
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace GameDesign_2.Components.Player
                 toSubtract -= loss;
             }
             //Are there points to add?
-            else if (toAdd > 0)
+            else if (toAdd > 0 && Score < goalScore)
             {
                 State = ScoreState.Gain;
                 int gain = pointsThisFrame;
@@ -202,6 +202,10 @@ namespace GameDesign_2.Components.Player
 
                 Score += gain;
                 toAdd -= gain;
+            }
+            else
+            {
+                State = ScoreState.Balance;
             }
 
             //Check if reached any score border.
@@ -258,13 +262,20 @@ namespace GameDesign_2.Components.Player
                     break;
             }
 
-            //Get the right source rectangle.
-            float xScale = GetScorePercentage() * 0.01f * TextureSize;
-            Rectangle rect = new Rectangle(0, 0, (int)xScale, TextureSize);
+            //Calculate the position for the colored bar.
+            Vector2 cBarPos = new Vector2(
+                Position.X - HalfSize.X * 0.5f * ColorBarScale.X,
+                Position.Y);
 
+            //Calculate the right scale.
+            float xScale = GetScorePercentage() * 0.01f;
+            Vector2 cBarScale = new Vector2(
+                scale.X * xScale * ColorBarScale.X,
+                scale.Y * ColorBarScale.Y);
+            
             //Now draw the bar.
-            batch.Draw(texture, Position, rect, color, rotation, Origin, 
-                scale * ColorBarScale, effect, depth);
+            batch.Draw(texture, cBarPos, null, color, rotation, new Vector2(0, texture.Height * 0.5f), 
+                cBarScale, effect, depth);
 
             base.Draw(gameTime, batch);
         }

@@ -22,17 +22,18 @@ namespace GameDesign_2.Screens
         private Vector2 worldSize;
         private MouseState lastMouse;
 
-        public GameplayScreen(Game1 game, Vector2 worldSize)
+        public GameplayScreen(Game1 game, Vector2 worldSize, int goalScore)
             : base(game)
         {
             this.worldSize = worldSize;
             quadTree = new QuadTree(new Rectangle(
                 0, 0, (int)worldSize.X, (int)worldSize.Y));
+
+            Components.Add(Player = new PlayerBall(GDGame, new Vector2(300, 300), goalScore));
         }
 
         public override void Initialize()
         {
-            Components.Add(Player = new PlayerBall(GDGame, new Vector2(300, 300)));
             Components.Add(new Wall(GDGame, new Vector2(0, 0), new Vector2(1280, 50)));
             Components.Add(new Wall(GDGame, new Vector2(1230, 50), new Vector2(1280, 720)));
             Components.Add(new Wall(GDGame, new Vector2(0, 670), new Vector2(1230, 720)));
@@ -62,10 +63,6 @@ namespace GameDesign_2.Screens
                     ball.ReverseYMovement();
                 }
             }
-
-            ScoreBar bar;
-            HuDComponents.Add(bar = new ScoreBar(GDGame, 5000000));
-            bar.AddScore(5000000);
 
             base.Initialize();
         }
