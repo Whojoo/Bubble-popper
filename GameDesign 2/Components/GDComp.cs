@@ -133,8 +133,7 @@ namespace GameDesign_2.Components
         {
             //Simple collision check using both the circles' radius.
             float distSQ = (position - other.Position).LengthSquared();
-            float radiiSQ = (halfSize.X + other.HalfSize.X);
-            radiiSQ *= radiiSQ;
+            float radiiSQ = (halfSize.X + other.HalfSize.X) * (halfSize.X + other.HalfSize.X);
 
             return distSQ < radiiSQ;
         }

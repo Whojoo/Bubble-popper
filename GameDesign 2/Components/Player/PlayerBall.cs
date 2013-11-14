@@ -12,12 +12,15 @@ namespace GameDesign_2.Components.Player
     {
         private const float PlayerRadius = 30;
 
-        private ScoreBar scoreBar;
+        public ScoreBar ScoreBar { get; private set; }
+
+        private int goalScore;
 
         public PlayerBall(Game1 game, Vector2 position, int goalScore)
             : base(game, position, PlayerRadius)
         {
-            scoreBar = new ScoreBar(game, goalScore);
+            ScoreBar = new ScoreBar(game, goalScore);
+            this.goalScore = goalScore;
         }
 
         public override void Initialize()
@@ -29,12 +32,15 @@ namespace GameDesign_2.Components.Player
             //Put the mouse back in the screen's center.
             Mouse.SetPosition((int)center.X, (int)center.Y);
 
+            //Add the scoreBar.
+            GDGame.GetActiveScreen().HuDComponents.Add(ScoreBar);
+
             base.Initialize();
         }
 
         public void AddScore(int amount)
         {
-            scoreBar.AddScore(amount);
+            ScoreBar.AddScore(amount);
         }
 
         public override bool CheckCollisionWith(GameTime gameTime, GDComp other)
@@ -43,15 +49,11 @@ namespace GameDesign_2.Components.Player
             {
                 return other.CheckCollisionWith(gameTime, this);
             }
-            else
+            else if (other is ScoreBall)
             {
-                if (CircleCircleCollision(other))
-                {
-
-                }
-
-                return true;
+                return other.CheckCollisionWith(gameTime, this);
             }
+            return false;
         }
 
         public void Move(GameTime gameTime)
@@ -79,9 +81,9 @@ namespace GameDesign_2.Components.Player
             Velocity /= (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
-        public void SubtractScore(int amount)
+        public void SubtractScore()
         {
-            scoreBar.SubtractScore(amount);
+            ScoreBar.SubtractScore((int)(goalScore * 0.05f));
         }
 
         public override void Update(GameTime gameTime)
