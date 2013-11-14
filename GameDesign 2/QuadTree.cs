@@ -163,7 +163,7 @@ namespace GameDesign_2
             leaves.Add(comp);
 
             //Do we need to split?
-            if (level < MaxLevel && leaves.Count > MaxLeaves)
+            if (nodes[0] == null && level < MaxLevel && leaves.Count > MaxLeaves)
             {
                 Split();
 
@@ -267,6 +267,37 @@ namespace GameDesign_2
             else
             {
                 batch.Draw(tex, Bounds, new Color(color, 0.1f));
+            }
+        }
+
+        public void Debug()
+        {
+            string toWrite = "";
+            for (int i = 0; i < level; i++)
+            {
+                toWrite += "- ";
+            }
+
+            for (int i = 0; i < leaves.Count; i++)
+            {
+                if (leaves[i] is Components.Player.PlayerBall)
+                {
+                    toWrite += "Player, ";
+                }
+                else if (leaves[i] is Components.ScoreBall)
+                {
+                    toWrite += (leaves[i] as Components.ScoreBall).ColorT + ", ";
+                }
+            }
+
+            Console.WriteLine(toWrite);
+
+            if (nodes[0] != null)
+            {
+                for (int i = 0; i < Nodes; i++)
+                {
+                    nodes[i].Debug();
+                }
             }
         }
     }
