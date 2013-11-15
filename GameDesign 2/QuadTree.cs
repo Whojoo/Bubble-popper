@@ -32,7 +32,7 @@ namespace GameDesign_2
 
         //Node constants.
         private const int MaxLevel = 5;
-        private const int MaxLeaves = 1;
+        private const int MaxLeaves = 5;
         private const int Nodes = 4;
 
         //Readonly bounds.
@@ -264,37 +264,6 @@ namespace GameDesign_2
             else
             {
                 batch.Draw(tex, Bounds, new Color(color, 0.1f));
-            }
-        }
-
-        public void Debug()
-        {
-            string toWrite = "";
-            for (int i = 0; i < level; i++)
-            {
-                toWrite += "- ";
-            }
-
-            for (int i = 0; i < leaves.Count; i++)
-            {
-                if (leaves[i] is Components.Player.PlayerBall)
-                {
-                    toWrite += "Player, ";
-                }
-                else if (leaves[i] is Components.ScoreBall)
-                {
-                    toWrite += (leaves[i] as Components.ScoreBall).ColorT + ", ";
-                }
-            }
-
-            Console.WriteLine(toWrite);
-
-            if (nodes[0] != null)
-            {
-                for (int i = 0; i < Nodes; i++)
-                {
-                    nodes[i].Debug();
-                }
             }
         }
     }
