@@ -50,6 +50,8 @@ namespace GameDesign_2
                 graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             GraphicsDevice.Viewport = vp;
 
+            Spawner.GetInstance().Game = this;
+
             Components.Add(Camera = new Camera2D(this));
 
             base.Initialize();
