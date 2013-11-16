@@ -67,6 +67,7 @@ namespace GameDesign_2.Components
 
         public override bool CheckCollisionWith(GameTime gameTime, GDComp other)
         {
+            //Early out if we have another ScoreBall.
             if (other is ScoreBall)
             {
                 return false;
@@ -118,6 +119,11 @@ namespace GameDesign_2.Components
 
         private void PlayerHit(PlayerBall playerBall)
         {
+            if (Remove)
+            {
+                return;
+            }
+
             const int AddScore = 50;
 
             switch (ScoreState)
@@ -128,12 +134,10 @@ namespace GameDesign_2.Components
                 case State.Friendly:
                     playerBall.AddScore(AddScore);
                     break;
-                default:
-                    Debug.WriteLine("Uh-oh");
-                    break;
             }
 
-            Remove = true;
+            //Let the spawner remove this Scoreball.
+            Spawner.GetInstance().RemoveBall(this);
         }
 
         public void ReverseXMovement()

@@ -51,18 +51,24 @@ namespace GameDesign_2.Screens
 
             lastMouse = Mouse.GetState();
 
-            for (int i = 0; i < 50; i++)
-            {
-                Vector2 position = new Vector2(randy.Next(100, 900), randy.Next(100, 600));
-                ScoreBall ball;
-                Components.Add(ball = new ScoreBall(GDGame, position, randy.Next(0, sinusoids)));
+            Spawner spawner = Spawner.GetInstance();
+            spawner.MaximumAlive = 2000;
+            spawner.AddPortal(new SpawnPortal(GDGame, new Vector2(200, 200), new Vector2(10, 10)));
+            spawner.AddPortal(new SpawnPortal(GDGame, new Vector2(800, 200), new Vector2(10, 10)));
+            spawner.AddPortal(new SpawnPortal(GDGame, new Vector2(600, 500), new Vector2(10, 10)));
 
-                if (randy.Next(2, 5) > 3)
-                {
-                    ball.ReverseXMovement();
-                    ball.ReverseYMovement();
-                }
-            }
+            //for (int i = 0; i < 50; i++)
+            //{
+            //    Vector2 position = new Vector2(randy.Next(100, 900), randy.Next(100, 600));
+            //    ScoreBall ball;
+            //    Components.Add(ball = new ScoreBall(GDGame, position, randy.Next(0, sinusoids)));
+
+            //    if (randy.Next(2, 5) > 3)
+            //    {
+            //        ball.ReverseXMovement();
+            //        ball.ReverseYMovement();
+            //    }
+            //}
 
             base.Initialize();
         }
@@ -78,6 +84,9 @@ namespace GameDesign_2.Screens
         {
             //Update the sinusoid graphs.
             Sinusoid.GetInstance().Update(gameTime);
+
+            //Update the Spawner.
+            Spawner.GetInstance().Update();
 
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
@@ -150,6 +159,9 @@ namespace GameDesign_2.Screens
         {
             //Reset the sinusoid instance for other screens.
             Sinusoid.GetInstance().Reset();
+
+            //Reset the Spawner.
+            Spawner.GetInstance().Reset();
 
             base.Unload();
         }

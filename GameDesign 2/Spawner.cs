@@ -91,6 +91,8 @@ namespace GameDesign_2
             {
                 ball = graveyard[lastInGraveyard];
                 graveyard.RemoveAt(lastInGraveyard);
+                ball.Remove = false;
+                ball.Position = portal.GetSpawnPosition();
             }
             else
             {
@@ -100,6 +102,7 @@ namespace GameDesign_2
 
             Game.GetActiveScreen().Components.Add(ball);
             active.Add(ball);
+            ball.Initialize();
 
             //Do we need a friendly?
             if (enemies != 0 && ((int)friendlies / enemies) < friendliesPerEnemies)
@@ -146,6 +149,11 @@ namespace GameDesign_2
                     if ((active[i].Position - player.Position).LengthSquared() < requiredDistSQ)
                     {
                         continue;
+                    }
+                    else if (i == active.Count)
+                    {
+                        //Don't go beyond the active counter.
+                        return;
                     }
 
                     active[i].ChangeState(ScoreBall.State.Enemy);
@@ -205,11 +213,24 @@ namespace GameDesign_2
         {
             //Set the ball for removing. The game-loop will remove it when it's safe.
             ball.Remove = true;
+            active.Remove(ball);
+            //int index = active.IndexOf(ball);
+            //if (index != -1)
+            //{
+            //    active.RemoveAt(index);
+            //}
+            //else
+            //{
+            //    Console.WriteLine("break");
+            //}
 
-            int index = active.IndexOf(ball);
-            if (index != -1)
+            if (ball.ScoreState == ScoreBall.State.Enemy)
             {
-                active.RemoveAt(index);
+                enemies--;
+            }
+            else
+            {
+                friendlies--;
             }
 
             graveyard.Add(ball);
@@ -241,7 +262,7 @@ namespace GameDesign_2
         {
             int toAdd = SpawnsPerFrame;
             int totalActive = active.Count;
-
+            
             //Check if there is need for more or less ScoreBalls.
             if (totalActive < MinimumAlive)
             {
@@ -251,6 +272,12 @@ namespace GameDesign_2
             else if (totalActive >= MaximumAlive)
             {
                 toAdd = 0;
+            }
+
+            //Can we spawn anything?
+            if (portals.Count == 0)
+            {
+                return;
             }
 
             //Add the ScoreBalls.
