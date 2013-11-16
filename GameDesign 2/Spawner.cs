@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GameDesign_2.Components;
+using GameDesign_2.Components.Player;
+using GameDesign_2.Screens;
 
 namespace GameDesign_2
 {
@@ -10,19 +12,20 @@ namespace GameDesign_2
     {
         private const int DefaultMinimum = 100;
         private const int DefaultMaximum = 1000;
+        private const int DefaultFriendliesPerEnemies = 20;
 
         //Use a spawns per frame since the Spawner will compensate when we get below minimum.
         private const int SpawnsPerFrame = 1;
 
         /// <summary>
         /// The minimum amount of ScoreBall balls that have to be active.
-        /// Default = 100
+        /// Default = 100.
         /// </summary>
         public int MinimumAlive { get; set; }
 
         /// <summary>
         /// The maximum amount of ScoreBalls that can be active.
-        /// Default = 1000
+        /// Default = 1000.
         /// </summary>
         public int MaximumAlive { get; set; }
 
@@ -43,6 +46,7 @@ namespace GameDesign_2
         //Used to keep track of friendlies and enemies.
         private int enemies;
         private int friendlies;
+        private int friendliesPerEnemies;
 
         private Spawner()
         {
@@ -54,6 +58,10 @@ namespace GameDesign_2
             MaximumAlive = DefaultMaximum;
 
             portalIndex = 0;
+
+            enemies = 0;
+            friendlies = 0;
+            friendliesPerEnemies = DefaultFriendliesPerEnemies;
         }
 
         /// <summary>
@@ -92,6 +100,63 @@ namespace GameDesign_2
 
             Game.GetActiveScreen().Components.Add(ball);
             active.Add(ball);
+        }
+
+        /// <summary>
+        /// Adept the current amount of ScoreBalls to the current friendlies per enemies balance.
+        /// </summary>
+        private void AdeptScoreBallStates()
+        {
+            int currentBalance = (int)(friendlies / enemies);
+
+            int difference = friendliesPerEnemies - currentBalance;
+
+            //Do we need to do anything at all?
+            if (difference == 0)
+            {
+                return;
+            }
+            //Do we require more enemies?
+            else if (difference < 0)
+            {
+                difference = Math.Abs(difference);
+                PlayerBall player = (Game.GetActiveScreen() as GameplayScreen).Player;
+
+                //Make sure the ScoreBalls aren't about to hit the player.
+                const float SafeRangeMultiplier = 4;
+                float requiredDistSQ = player.HalfSize.X * SafeRangeMultiplier;
+                requiredDistSQ *= requiredDistSQ;
+
+                int i = 0;
+                while (i < difference)
+                {
+                    if ((active[i].Position - player.Position).LengthSquared() < requiredDistSQ)
+                    {
+                        continue;
+                    }
+
+                    active[i].ChangeState(ScoreBall.State.Enemy);
+
+                    //Adept the enemies and friendlies counter.
+                    enemies++;
+                    friendlies--;
+
+                    i++;
+                }
+            }
+            //We require more friendlies.
+            else
+            {
+                //It doesn't matter if the ScoreBalls are close to the player.
+                for (int i = 0; i < difference; i++)
+                {
+                    active[i].ChangeState(ScoreBall.State.Friendly);
+
+                    //Adept the enemies and friendlies counter.
+                    enemies--;
+                    friendlies++;
+                }
+            }
         }
 
         /// <summary>
@@ -174,6 +239,30 @@ namespace GameDesign_2
             for (int i = 0; i < toAdd; i++)
             {
                 AddBall(GetNextPortal());
+            }
+        }
+
+        /// <summary>
+        /// The amount of friendlies per enemies.
+        /// Default = 20.
+        /// </summary>
+        public int FriendliesPerEnemies 
+        {
+            get
+            {
+                return friendliesPerEnemies;
+            }
+            set
+            {
+                if (value <= 0)
+                {
+                    return;
+                }
+
+                friendliesPerEnemies = value;
+
+                //Adept some scoreballs to the new value.
+                AdeptScoreBallStates();
             }
         }
     }
