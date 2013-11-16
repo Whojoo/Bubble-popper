@@ -21,7 +21,7 @@ namespace GameDesign_2.Screens.MenuScreens
         protected override void EntryClicked(int index)
         {
             Manager.Pop();
-            Manager.Push(new GameplayScreen(GDGame, new Vector2(1280, 720), 5000000));
+            Manager.Push(new GameplayScreen(GDGame, new Vector2(1280, 720), 100000));
         }
     }
 }

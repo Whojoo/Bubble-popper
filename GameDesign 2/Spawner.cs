@@ -214,15 +214,6 @@ namespace GameDesign_2
             //Set the ball for removing. The game-loop will remove it when it's safe.
             ball.Remove = true;
             active.Remove(ball);
-            //int index = active.IndexOf(ball);
-            //if (index != -1)
-            //{
-            //    active.RemoveAt(index);
-            //}
-            //else
-            //{
-            //    Console.WriteLine("break");
-            //}
 
             if (ball.ScoreState == ScoreBall.State.Enemy)
             {

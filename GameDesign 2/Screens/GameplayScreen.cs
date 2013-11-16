@@ -52,7 +52,6 @@ namespace GameDesign_2.Screens
             lastMouse = Mouse.GetState();
 
             Spawner spawner = Spawner.GetInstance();
-            spawner.MaximumAlive = 2000;
             spawner.AddPortal(new SpawnPortal(GDGame, new Vector2(200, 200), new Vector2(10, 10)));
             spawner.AddPortal(new SpawnPortal(GDGame, new Vector2(800, 200), new Vector2(10, 10)));
             spawner.AddPortal(new SpawnPortal(GDGame, new Vector2(600, 500), new Vector2(10, 10)));
