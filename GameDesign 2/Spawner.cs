@@ -102,14 +102,16 @@ namespace GameDesign_2
             active.Add(ball);
 
             //Do we need a friendly?
-            if (((int)friendlies / enemies) < friendliesPerEnemies)
+            if (enemies != 0 && ((int)friendlies / enemies) < friendliesPerEnemies)
             {
                 ball.ChangeState(ScoreBall.State.Friendly);
+                friendlies++;
             }
             //We need an enemy.
             else
             {
                 ball.ChangeState(ScoreBall.State.Enemy);
+                enemies++;
             }
         }
 
@@ -228,6 +230,11 @@ namespace GameDesign_2
             MinimumAlive = DefaultMinimum;
             MaximumAlive = DefaultMaximum;
             portalIndex = 0;
+
+            //Reset the counters.
+            friendlies = 0;
+            enemies = 0;
+            friendliesPerEnemies = DefaultFriendliesPerEnemies;
         }
 
         public void Update()

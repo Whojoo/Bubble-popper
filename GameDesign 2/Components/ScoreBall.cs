@@ -46,15 +46,22 @@ namespace GameDesign_2.Components
             Velocity += steeringVel;
         }
 
-        private void CorrectVelocity()
+        /// <summary>
+        /// Change this ball's state.
+        /// </summary>
+        /// <param name="state">The new state.</param>
+        public void ChangeState(State state)
         {
-            float lengthSQ = Velocity.LengthSquared();
+            ScoreState = state;
 
-            if (lengthSQ > Speed * Speed)
+            switch (state)
             {
-                float comparison = Speed / (float)Math.Sqrt(lengthSQ);
-
-                Velocity *= comparison;
+                case State.Enemy:
+                    Color = Color.Red;
+                    break;
+                case State.Friendly:
+                    Color = GetFriendlyColor();
+                    break;
             }
         }
 
@@ -78,6 +85,35 @@ namespace GameDesign_2.Components
             {
                 return other.CheckCollisionWith(gameTime, this);
             }
+        }
+
+        private void CorrectVelocity()
+        {
+            float lengthSQ = Velocity.LengthSquared();
+
+            if (lengthSQ > Speed * Speed)
+            {
+                float comparison = Speed / (float)Math.Sqrt(lengthSQ);
+
+                Velocity *= comparison;
+            }
+        }
+
+        private Color GetFriendlyColor()
+        {
+            Random randy = new Random();
+
+            //Green and blue can be between 0 and 255.
+            int green = randy.Next(0, 255);
+            int blue = randy.Next(0, 255);
+
+            //Enemies are red so make sure the red value is the lowest.
+            int red = randy.Next(0, green < blue ? green : blue);
+
+            //Randomized alpha. Keep it above 0 but below 1 by: (X + 0.5) * 0.6.
+            float alpha = (float)(randy.NextDouble() + 0.5f) * 0.6f;
+
+            return new Color(red, green, blue, alpha);
         }
 
         private void PlayerHit(PlayerBall playerBall)
@@ -117,26 +153,6 @@ namespace GameDesign_2.Components
             Position += Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             base.Update(gameTime);
-        }
-
-        public void ChangeState(State state)
-        {
-            State = state;
-
-            switch (state)
-            {
-                case State.Enemy:
-                    Color = Color.Red;
-                    break;
-                case State.Friendly:
-                    Color = GetFriendlyColor();
-                    break;
-            }
-        }
-
-        private Color GetFriendlyColor()
-        {
-            throw new NotImplementedException();
         }
     }
 }
