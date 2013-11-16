@@ -17,8 +17,13 @@ namespace GameDesign_2.Components
         }
 
         private const float Speed = 100;
+        private const float TimeAlive = 15;
+
         private int sinusoidIndex;
+        private float timeLeft;
         private Vector2 reverseIndex;
+        private bool initialised;
+
         public State ScoreState { get; private set; }
 
         public ScoreBall(Game1 game, Vector2 position, int sinusoidIndex)
@@ -27,14 +32,20 @@ namespace GameDesign_2.Components
             this.sinusoidIndex = sinusoidIndex;
             reverseIndex = new Vector2(1, 1);
             ScoreState = State.Enemy;
+            timeLeft = TimeAlive;
+            initialised = false;
         }
 
-        public ScoreBall(Game1 game, Vector2 position, int sinusoidIndex, State scoreState)
-            : base(game, position, 10)
+        public override void Initialize()
         {
-            this.sinusoidIndex = sinusoidIndex;
-            reverseIndex = new Vector2(1, 1);
-            ScoreState = scoreState;
+            timeLeft = TimeAlive;
+
+            if (!initialised)
+            {
+                initialised = true;
+
+                base.Initialize();
+            }
         }
 
         private void AdjustVelocity()
@@ -104,17 +115,9 @@ namespace GameDesign_2.Components
         {
             Random randy = new Random();
 
-            //Green and blue can be between 0 and 255.
-            int green = randy.Next(0, 255);
-            int blue = randy.Next(0, 255);
-
-            //Enemies are red so make sure the red value is the lowest.
-            int red = randy.Next(0, green < blue ? green : blue);
-
-            //Randomized alpha. Keep it above 0 but below 1 by: (X + 0.5) * 0.6.
-            float alpha = (float)(randy.NextDouble() + 0.5f) * 0.6f;
-
-            return new Color(red, green, blue, alpha);
+            return new Color((new Color(new Vector3(0,
+                randy.Next(150, 250),
+                randy.Next(150, 250)))), 0.05f);
         }
 
         private void PlayerHit(PlayerBall playerBall)
@@ -152,6 +155,12 @@ namespace GameDesign_2.Components
 
         public override void Update(GameTime gameTime)
         {
+            timeLeft -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (timeLeft <= 0)
+            {
+                Spawner.GetInstance().RemoveBall(this);
+            }
+
             AdjustVelocity();
             CorrectVelocity();
             Position += Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
