@@ -45,11 +45,6 @@ namespace GameDesign_2.Screens
         public SpriteBatch Batch { get; private set; }
         public ContentManager Content { get; private set; }
 
-        private Thread collisionThread;
-        private ThreadWork worker;
-        private bool skipCollision = false;
-        private float collisionElapsedTime = 0;
-
         public Screen(Game1 game)
             : base(game, Shape.None, new Vector2(), new Vector2())
         {
@@ -106,30 +101,12 @@ namespace GameDesign_2.Screens
                 gc.Update(gameTime);
             }
 
-            //UpdateCollider(gameTime);
-
             foreach (GDComp gc in this.HuDComponents.OfType<GDComp>().Where<GDComp>(x => x.Enabled).OrderBy<IUpdateable, int>(x => x.UpdateOrder))
             {
                 gc.Update(gameTime);
             }
 
             base.Update(gameTime);
-        }
-
-        public void UpdateCollider(GameTime gameTime)
-        {
-            for (int i = Components.Count - 1; i >= 0; i--)
-            {
-                for (int j = i - 1; j >= 0; j--)
-                {
-                    GDComp c1, c2;
-                    if ((c1 = Components[i] as GDComp) != null &&
-                        (c2 = Components[j] as GDComp) != null)
-                    {
-                        c1.CheckCollisionWith(gameTime, c2);
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -172,92 +149,6 @@ namespace GameDesign_2.Screens
                 comp.Dispose();
             }
         }
-    }
-
-    internal class ThreadWork
-    {
-        private const int ComponentPerThread = 300;
-        private int index;
-        private object locker = new object();
-        private List<GDComp> components;
-
-        public void Go(GameTime gameTime, List<GDComp> comps)
-        {
-            components = comps;
-            index = comps.Count;
-            Thread[] workers = new Thread[(int)(index / ComponentPerThread)];
-
-            Update(gameTime, workers);
-            Wait(workers);
-
-            index = comps.Count;
-        }
-
-        private void Wait(Thread[] workers)
-        {
-            while (true)
-            {
-                bool temp = false;
-                foreach (Thread t in workers)
-                {
-                    if (t.IsAlive)
-                    {
-                        temp = true;
-                        break;
-                    }
-                }
-
-                if (temp)
-                    continue;
-
-                break;
-            }
-        }
-
-        private void CollisionCheck(GameTime gameTime, Thread[] workers)
-        {
-            
-        }
-
-        private void Update(GameTime gameTime, Thread[] workers)
-        {
-            for (int i = 0; i < workers.Length; i++)
-            {
-                workers[i] = new Thread(UpdateThreader);
-                workers[i].Start(gameTime);
-            }
-
-            UpdateThreader(gameTime);
-        }
-
-        private void UpdateThreader(object gameTime)
-        {
-            GameTime elapsed = gameTime as GameTime;
-            GDComp comp;
-            while ((comp = GetNext()) != null)
-            {
-                comp.Update(elapsed);
-            }
-        }
-
-        private GDComp GetNext()
-        {
-            lock (locker)
-            {
-                index--;
-
-                if (index < 0)
-                {
-                    return null;
-                }
-                else
-                {
-                    return components[index];
-                }
-            }
-        }
-
-        public GameComponentCollection Components { get; set; }
     }
 }
 //Hello =D 
