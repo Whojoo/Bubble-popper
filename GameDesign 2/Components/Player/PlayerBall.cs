@@ -83,7 +83,7 @@ namespace GameDesign_2.Components.Player
 
         public void SubtractScore()
         {
-            ScoreBar.SubtractScore((int)(goalScore * 0.05f));
+            ScoreBar.SubtractScore((int)(goalScore * 0.01f));
         }
 
         public override void Update(GameTime gameTime)

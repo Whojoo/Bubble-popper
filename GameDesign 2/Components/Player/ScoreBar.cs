@@ -20,7 +20,7 @@ namespace GameDesign_2.Components.Player
     {
         //Drop the score by 5% after 10 seconds.
         private const int SecondsPerPointDrop = 10;
-        private const int PercentDropByTimeBorder = 5;
+        private const int PercentDropByTimeBorder = 1;
 
         //Bar colors.
         private readonly Color Background = Color.Black;
@@ -58,6 +58,7 @@ namespace GameDesign_2.Components.Player
         {
             this.goalScore = goalScore;
             PercentPerSecond = (int)(goalScore * 0.05f);
+            timeCounter = -10;
         }
 
         /// <summary>
@@ -80,7 +81,7 @@ namespace GameDesign_2.Components.Player
         public override void Initialize()
         {
             Score = 1;
-            //toAdd = 0;
+            toAdd = 0;
             toSubtract = 0;
 
             State = ScoreState.Balance;
@@ -171,7 +172,7 @@ namespace GameDesign_2.Components.Player
         {
             //Delta Time.
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
+            
             //First calculate how many points max can be add or subtracted this frame.
             int pointsThisFrame = (int)(PercentPerSecond * dt);
 
