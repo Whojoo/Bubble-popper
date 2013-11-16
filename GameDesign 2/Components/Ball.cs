@@ -44,5 +44,12 @@ namespace GameDesign_2.Components
 
             base.Draw(gameTime, batch);
         }
+
+        public override void Unload()
+        {
+            circle.Dispose();
+
+            base.Unload();
+        }
     }
 }

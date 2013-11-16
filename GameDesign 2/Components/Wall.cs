@@ -133,8 +133,15 @@ namespace GameDesign_2.Components
             Color colo = Color.White;
             batch.Draw(wall, Position, null, colo, rotation, Origin, scaleCorrection, 
                 SpriteEffects.None, depth);
-
+            
             base.Draw(gameTime, batch);
+        }
+
+        public override void Unload()
+        {
+            wall.Dispose();
+
+            base.Unload();
         }
     }
 }
