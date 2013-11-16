@@ -60,6 +60,7 @@
     <Compile Include="ScreenManager.cs" />
     <Compile Include="Screens\MenuScreen.cs" />
     <Compile Include="Sinusoide.cs" />
+    <Compile Include="Spawner.cs" />
     <Compile Include="States\IState.cs" />
     <Compile Include="States\TextState.cs" />
     <Compile Include="Text\MenuEntry.cs" />

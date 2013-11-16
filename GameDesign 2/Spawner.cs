@@ -100,6 +100,17 @@ namespace GameDesign_2
 
             Game.GetActiveScreen().Components.Add(ball);
             active.Add(ball);
+
+            //Do we need a friendly?
+            if (((int)friendlies / enemies) < friendliesPerEnemies)
+            {
+                ball.ChangeState(ScoreBall.State.Friendly);
+            }
+            //We need an enemy.
+            else
+            {
+                ball.ChangeState(ScoreBall.State.Enemy);
+            }
         }
 
         /// <summary>

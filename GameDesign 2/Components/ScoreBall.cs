@@ -19,7 +19,7 @@ namespace GameDesign_2.Components
         private const float Speed = 100;
         private int sinusoidIndex;
         private Vector2 reverseIndex;
-        public State ScoreState { get; set; }
+        public State ScoreState { get; private set; }
 
         public ScoreBall(Game1 game, Vector2 position, int sinusoidIndex)
             : base(game, position, 10)
@@ -107,7 +107,7 @@ namespace GameDesign_2.Components
 
         public void ReverseYMovement()
         {
-
+            reverseIndex.Y *= -1;
         }
 
         public override void Update(GameTime gameTime)
@@ -117,6 +117,26 @@ namespace GameDesign_2.Components
             Position += Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             base.Update(gameTime);
+        }
+
+        public void ChangeState(State state)
+        {
+            State = state;
+
+            switch (state)
+            {
+                case State.Enemy:
+                    Color = Color.Red;
+                    break;
+                case State.Friendly:
+                    Color = GetFriendlyColor();
+                    break;
+            }
+        }
+
+        private Color GetFriendlyColor()
+        {
+            throw new NotImplementedException();
         }
     }
 }
