@@ -195,7 +195,8 @@ namespace GameDesign_2
         /// <param name="components">A list of components which implements IList</param>
         public void Insert(IList<IGameComponent> components)
         {
-            foreach (GDComp comp in components)
+            //Insert all collidable objects.
+            foreach (GDComp comp in components.OfType<GDComp>().Where<GDComp>(x => x.Shape != Shape.None))
             {
                 Insert(comp);
             }
