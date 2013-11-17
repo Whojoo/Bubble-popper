@@ -74,6 +74,7 @@ namespace GameDesign_2.Screens.GameplayScreens
 
             //Spawn the player in the center.
             Player.Position = new Vector2(915, 670);
+            GDGame.Camera.Position = Player.Position;
 
             //Row 4 continue.
             topLeft = new Vector2(1140, 630);
@@ -102,6 +103,53 @@ namespace GameDesign_2.Screens.GameplayScreens
             //Row 7.
             topLeft = new Vector2(1010, 1280);
             Components.Add(new Wall(GDGame, topLeft, topLeft + (new Vector2(550, BlockWidthOrHeight))));
+
+            //Now add the portals.
+            Spawner spawner = Spawner.GetInstance();
+            SpawnPortal portal;
+            Vector2 hs = new Vector2(30, 50);
+
+            //Portal row 1.
+            Components.Add(portal = new SpawnPortal(GDGame, new Vector2(915, 350), hs));
+            spawner.AddPortal(portal);
+            Components.Add(portal = new SpawnPortal(GDGame, new Vector2(1515, 160), hs));
+            spawner.AddPortal(portal);
+
+            //Portal row 2.
+            Components.Add(portal = new SpawnPortal(GDGame, new Vector2(80, 550), hs));
+            spawner.AddPortal(portal);
+            Components.Add(portal = new SpawnPortal(GDGame, new Vector2(1750, 550), hs));
+            spawner.AddPortal(portal);
+
+            //Portal row 3.
+            Components.Add(portal = new SpawnPortal(GDGame, new Vector2(80, 800), hs));
+            spawner.AddPortal(portal);
+            Components.Add(portal = new SpawnPortal(GDGame, new Vector2(1600, 800), hs));
+            spawner.AddPortal(portal);
+
+            //Portal row 4.
+            Components.Add(portal = new SpawnPortal(GDGame, new Vector2(80, 1250), hs));
+            spawner.AddPortal(portal);
+            Components.Add(portal = new SpawnPortal(GDGame, new Vector2(1400, 1150), hs));
+            spawner.AddPortal(portal);
+
+            //Portal row 5.
+            Components.Add(portal = new SpawnPortal(GDGame, new Vector2(1050, 1420), hs));
+            spawner.AddPortal(portal);
+
+            //Change spawner default values.
+            spawner.MaximumAlive = 4000;
+            spawner.MinimumAlive = 300;
+            spawner.FriendliesPerEnemies = 5;
+
+            //Now add some numbers to the sinusoid instance.
+            Sinusoid sin = Sinusoid.GetInstance();
+            Random randy = new Random(200);
+            const int sinusoids = 20;
+            for (int i = 0; i < sinusoids; i++)
+            {
+                sin.AddGraph((float)randy.NextDouble() + 2.0f, i, (float)randy.NextDouble() + 0.5f);
+            }
 
             base.Initialize();
         }
