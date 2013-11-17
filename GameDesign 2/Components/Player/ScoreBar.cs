@@ -20,7 +20,7 @@ namespace GameDesign_2.Components.Player
     {
         //Drop the score by 5% after 10 seconds.
         private const int SecondsPerPointDrop = 10;
-        private const int PercentDropByTimeBorder = 0;
+        private const int PercentDropByTimeBorder = 1;
 
         //Bar colors.
         private readonly Color Background = Color.Black;
