@@ -31,8 +31,6 @@ namespace GameDesign_2.Screens
             quadTree = new QuadTree(new Rectangle(
                 -10, -10, (int)worldSize.X + 20, (int)worldSize.Y + 20));
 
-            GDGame.Camera.WorldSize = worldSize;
-
             //Add the 4 walls on the outside of the world.
             Components.Add(new Wall(GDGame, new Vector2(-10, -10), new Vector2(worldSize.X + 10, 0)));
             Components.Add(new Wall(GDGame, new Vector2(worldSize.X, -10), new Vector2(worldSize.X + 10, worldSize.Y)));
@@ -41,6 +39,9 @@ namespace GameDesign_2.Screens
 
             //Add the player to world.
             Components.Add(Player = new PlayerBall(GDGame, new Vector2(300, 300), goalScore));
+
+            //Give the camera the new world size.
+            GDGame.Camera.WorldSize = worldSize + new Vector2(0, 100);
         }
 
         public override void Initialize()
