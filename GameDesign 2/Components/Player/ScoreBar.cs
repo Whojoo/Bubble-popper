@@ -19,7 +19,7 @@ namespace GameDesign_2.Components.Player
     public class ScoreBar : GDComp
     {
         //Drop the score by 1% after 10 seconds.
-        private const int SecondsPerPointDrop = 10;
+        private const int SecondsPerPointDrop = 5;
         private const int PercentDropByTimeBorder = 1;
 
         //Bar colors.
@@ -58,7 +58,7 @@ namespace GameDesign_2.Components.Player
         {
             this.goalScore = goalScore;
             PercentPerSecond = (int)(goalScore * 0.05f);
-            timeCounter = -10;
+            timeCounter = 0;
         }
 
         /// <summary>

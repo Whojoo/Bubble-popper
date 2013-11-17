@@ -41,7 +41,7 @@ namespace GameDesign_2.Components.Player
 
         public void AddScore(int amount)
         {
-            ScoreBar.AddScore(amount);
+            ScoreBar.AddScore((int)(goalScore * 0.025f));
         }
 
         public override bool CheckCollisionWith(GameTime gameTime, GDComp other)
@@ -84,7 +84,7 @@ namespace GameDesign_2.Components.Player
 
         public void SubtractScore()
         {
-            ScoreBar.SubtractScore((int)(goalScore * 0.01f));
+            ScoreBar.SubtractScore((int)(goalScore * 0.025f));
         }
 
         public override void Update(GameTime gameTime)

@@ -138,9 +138,9 @@ namespace GameDesign_2.Screens.GameplayScreens
             spawner.AddPortal(portal);
 
             //Change spawner default values.
-            spawner.MaximumAlive = 4000;
-            spawner.MinimumAlive = 300;
-            spawner.FriendliesPerEnemies = 5;
+            spawner.MaximumAlive = 200;
+            spawner.MinimumAlive = 100;
+            spawner.FriendliesPerEnemies = 1;
 
             //Now add some numbers to the sinusoid instance.
             Sinusoid sin = Sinusoid.GetInstance();
