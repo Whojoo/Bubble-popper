@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using GameDesign_2.Screens.GameplayScreens;
 using GameDesign_2.Text;
 using Microsoft.Xna.Framework;
 
@@ -9,19 +10,27 @@ namespace GameDesign_2.Screens.MenuScreens
 {
     public class MainMenuScreen : MenuScreen
     {
+        private enum EntryOption : int
+        {
+            Dynamics
+        }
+
         public MainMenuScreen(Game1 game)
             : base(game, "Bubblepopper")
         {
-            Entries.Add(new MenuEntry("hello"));
-            Entries.Add(new MenuEntry("this is"));
-            Entries.Add(new MenuEntry("my awesome"));
-            Entries.Add(new MenuEntry("game :D"));
+            Entries.Add(new MenuEntry("Dynamics"));
         }
 
         protected override void EntryClicked(int index)
         {
             Manager.Pop();
-            Manager.Push(new GameplayScreen(GDGame, new Vector2(1280, 720), 100000));
+
+            switch (index)
+            {
+                case (int)EntryOption.Dynamics:
+                    Manager.Push(new DynamicsScreen(GDGame));
+                    break;
+            }
         }
     }
 }

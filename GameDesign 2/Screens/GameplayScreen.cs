@@ -6,6 +6,7 @@ using System.Text;
 using GameDesign_2.Components;
 using GameDesign_2.Components.Player;
 using GameDesign_2.Screens.MenuScreens;
+using GameDesign_2.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -20,55 +21,30 @@ namespace GameDesign_2.Screens
 
         private QuadTree quadTree;
         private Vector2 worldSize;
-        private MouseState lastMouse;
+        private IState currentState;
 
         public GameplayScreen(Game1 game, Vector2 worldSize, int goalScore)
             : base(game)
         {
             this.worldSize = worldSize;
+            //Make the tree a bit wider for outer walls.
             quadTree = new QuadTree(new Rectangle(
-                0, 0, (int)worldSize.X, (int)worldSize.Y));
+                -10, -10, (int)worldSize.X + 20, (int)worldSize.Y + 20));
 
+            GDGame.Camera.WorldSize = worldSize;
+
+            //Add the 4 walls on the outside of the world.
+            Components.Add(new Wall(GDGame, new Vector2(-10, -10), new Vector2(worldSize.X + 10, 0)));
+            Components.Add(new Wall(GDGame, new Vector2(worldSize.X, -10), new Vector2(worldSize.X + 10, worldSize.Y)));
+            Components.Add(new Wall(GDGame, new Vector2(0, worldSize.Y), new Vector2(worldSize.X + 10, worldSize.Y + 10)));
+            Components.Add(new Wall(GDGame, new Vector2(-10, 0), new Vector2(0, worldSize.Y + 10)));
+
+            //Add the player to world.
             Components.Add(Player = new PlayerBall(GDGame, new Vector2(300, 300), goalScore));
         }
 
         public override void Initialize()
         {
-            Components.Add(new Wall(GDGame, new Vector2(0, 0), new Vector2(1280, 50)));
-            Components.Add(new Wall(GDGame, new Vector2(1230, 50), new Vector2(1280, 720)));
-            Components.Add(new Wall(GDGame, new Vector2(0, 670), new Vector2(1230, 720)));
-            Components.Add(new Wall(GDGame, new Vector2(0, 50), new Vector2(50, 670)));
-
-            //Add sinusoid graphs.
-            Sinusoid sin = Sinusoid.GetInstance();
-
-            Random randy = new Random(200);
-            const int sinusoids = 20;
-            for (int i = 0; i < sinusoids; i++)
-            {
-                sin.AddGraph((float)randy.NextDouble() + 2.0f, i, (float)randy.NextDouble() + 0.5f);
-            }
-
-            lastMouse = Mouse.GetState();
-
-            Spawner spawner = Spawner.GetInstance();
-            spawner.AddPortal(new SpawnPortal(GDGame, new Vector2(200, 200), new Vector2(10, 10)));
-            spawner.AddPortal(new SpawnPortal(GDGame, new Vector2(800, 200), new Vector2(10, 10)));
-            spawner.AddPortal(new SpawnPortal(GDGame, new Vector2(600, 500), new Vector2(10, 10)));
-
-            //for (int i = 0; i < 50; i++)
-            //{
-            //    Vector2 position = new Vector2(randy.Next(100, 900), randy.Next(100, 600));
-            //    ScoreBall ball;
-            //    Components.Add(ball = new ScoreBall(GDGame, position, randy.Next(0, sinusoids)));
-
-            //    if (randy.Next(2, 5) > 3)
-            //    {
-            //        ball.ReverseXMovement();
-            //        ball.ReverseYMovement();
-            //    }
-            //}
-
             base.Initialize();
         }
 
@@ -81,6 +57,11 @@ namespace GameDesign_2.Screens
 
         public override void Update(GameTime gameTime)
         {
+            if (currentState != null)
+            {
+                currentState.Update(gameTime);
+            }
+
             //Update the sinusoid graphs.
             Sinusoid.GetInstance().Update(gameTime);
 
@@ -91,17 +72,10 @@ namespace GameDesign_2.Screens
             {
                 Manager.Pop();
                 Manager.Push(new MainMenuScreen(GDGame));
+                return;
             }
 
-            //if (Mouse.GetState().RightButton == ButtonState.Pressed &&
-            //    lastMouse.RightButton == ButtonState.Released)
-            //{
-            //    ScoreBall temp;
-            //    Components.Add(temp = new ScoreBall(GDGame, Player.Position, 0));
-            //    temp.Initialize();
-            //    quadTree.Insert(temp);
-            //}
-            //lastMouse = Mouse.GetState();
+            CheckCameraChanges(gameTime);
 
             base.Update(gameTime);
 
@@ -141,6 +115,37 @@ namespace GameDesign_2.Screens
             }
         }
 
+        private void CheckCameraChanges(GameTime gameTime)
+        {
+            //First camera position check.
+            KeyboardState currentKey = Keyboard.GetState();
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Vector2 move = new Vector2();
+            const float speed = 500;
+
+            //Left or Right.
+            if (currentKey.IsKeyDown(Keys.Left))
+            {
+                move.X += -speed * dt;
+            }
+            else if (currentKey.IsKeyDown(Keys.Right))
+            {
+                move.X += speed * dt;
+            }
+
+            //Up or Down.
+            if (currentKey.IsKeyDown(Keys.Up))
+            {
+                move.Y += -speed * dt;
+            }
+            else if (currentKey.IsKeyDown(Keys.Down))
+            {
+                move.Y += speed * dt;
+            }
+
+            GDGame.Camera.Position += move;
+        }
+
         public override void Draw(GameTime gameTime)
         {
             if (debugMode)
@@ -165,11 +170,11 @@ namespace GameDesign_2.Screens
             base.Unload();
         }
 
-        internal void GameOver()
+        public void GameOver()
         {
         }
 
-        internal void Won()
+        public void Won()
         {
         }
     }
