@@ -123,6 +123,11 @@ namespace GameDesign_2
         /// </summary>
         private void AdeptScoreBallStates()
         {
+            if (enemies == 0)
+            {
+                return;
+            }
+
             int currentBalance = (int)(friendlies / enemies);
 
             int difference = friendliesPerEnemies - currentBalance;
