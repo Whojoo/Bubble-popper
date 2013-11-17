@@ -18,7 +18,7 @@ namespace GameDesign_2.Components.Player
     /// </summary>
     public class ScoreBar : GDComp
     {
-        //Drop the score by 5% after 10 seconds.
+        //Drop the score by 1% after 10 seconds.
         private const int SecondsPerPointDrop = 10;
         private const int PercentDropByTimeBorder = 1;
 
@@ -80,7 +80,7 @@ namespace GameDesign_2.Components.Player
 
         public override void Initialize()
         {
-            Score = 1;
+            Score = (int)(goalScore * 0.05f);
             toAdd = 0;
             toSubtract = 0;
 
