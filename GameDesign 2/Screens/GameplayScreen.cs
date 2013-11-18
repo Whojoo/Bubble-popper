@@ -21,7 +21,7 @@ namespace GameDesign_2.Screens
 
         private QuadTree quadTree;
         private Vector2 worldSize;
-        private IState currentState;
+        private List<IState> currentState;
 
         public GameplayScreen(Game1 game, Vector2 worldSize, int goalScore)
             : base(game)
@@ -42,6 +42,8 @@ namespace GameDesign_2.Screens
 
             //Give the camera the new world size.
             GDGame.Camera.WorldSize = worldSize + new Vector2(0, 100);
+
+            currentState = new List<IState>();
         }
 
         public override void Initialize()
@@ -58,9 +60,9 @@ namespace GameDesign_2.Screens
 
         public override void Update(GameTime gameTime)
         {
-            if (currentState != null)
+            if (currentState.Count > 0)
             {
-                currentState.Update(gameTime);
+                CurrentState.Update(gameTime);
             }
 
             //Update the sinusoid graphs.
@@ -177,6 +179,12 @@ namespace GameDesign_2.Screens
 
         public void Won()
         {
+        }
+
+        public IState CurrentState
+        {
+            get { return currentState[currentState.Count - 1]; }
+            set { currentState.Add(value); }
         }
     }
 }
