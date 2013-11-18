@@ -25,6 +25,7 @@ namespace GameDesign_2.Components
         private bool initialised;
 
         public State ScoreState { get; private set; }
+        public PlayerBall Target { get; set; }
 
         public ScoreBall(Game1 game, Vector2 position, int sinusoidIndex)
             : base(game, position, 10)
@@ -51,8 +52,19 @@ namespace GameDesign_2.Components
         private void AdjustVelocity()
         {
             //Add a steering to the velocity. ReverseIndex decides if this goes left or right.
-            Vector2 steeringVel = new Vector2(Speed * reverseIndex.X,
+            Vector2 steeringVel;
+
+            if (Target != null)
+            {
+                Vector2 dir = Target.Position - Position;
+                dir.Normalize();
+                steeringVel = dir * Speed;
+            }
+            else
+            {
+                steeringVel = new Vector2(Speed * reverseIndex.X,
                 Sinusoid.GetInstance().GetSinusoid(sinusoidIndex) * Speed * reverseIndex.Y);
+            }
 
             Velocity += steeringVel;
         }
