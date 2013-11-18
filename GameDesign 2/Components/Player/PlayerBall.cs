@@ -22,6 +22,7 @@ namespace GameDesign_2.Components.Player
             ScoreBar = new ScoreBar(game, goalScore);
             this.goalScore = goalScore;
             Color = Color.Blue;
+            Scale = 1;
         }
 
         public override void Initialize()
@@ -95,7 +96,35 @@ namespace GameDesign_2.Components.Player
                 Move(gameTime);
             }
 
+            //Start growing when the score reachest 25%. Stop at 80% with a radius of 100.
+            float scorePercentage = ScoreBar.GetScorePercentage();
+            if (scorePercentage > 25 && scorePercentage <= 80)
+            {
+                float growFactor = (120f / 60f) - 1;
+                Scale = 1 + growFactor * ((scorePercentage - 25) / 55f);
+            }
+            else if (scorePercentage > 80)
+            {
+                Scale = 120f / 60f;
+            }
+            else
+            {
+                Scale = 1;
+            }
+
             base.Update(gameTime);
+        }
+
+        public override Vector2 HalfSize
+        {
+            get
+            {
+                return base.HalfSize * Scale;
+            }
+            set
+            {
+                base.HalfSize = value;
+            }
         }
     }
 }

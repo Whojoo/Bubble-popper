@@ -105,8 +105,8 @@ namespace GameDesign_2.Components
             circleDist.Y = Math.Abs(position.Y - other.Position.Y);
 
             //Are the 2 objects close to eachother?
-            if (circleDist.X > (other.HalfSize.X + halfSize.X) ||
-                circleDist.Y > (other.HalfSize.Y + halfSize.Y))
+            if (circleDist.X > (other.HalfSize.X + HalfSize.X) ||
+                circleDist.Y > (other.HalfSize.Y + HalfSize.Y))
             {
                 return false;
             }
