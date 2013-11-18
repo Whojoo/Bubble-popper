@@ -146,6 +146,7 @@ namespace GameDesign_2.Screens
                 move.Y += speed * dt;
             }
 
+            //Move the camera.
             GDGame.Camera.Position += move;
         }
 
@@ -185,6 +186,11 @@ namespace GameDesign_2.Screens
         {
             get { return currentState[currentState.Count - 1]; }
             set { currentState.Add(value); }
+        }
+
+        public void RemoveTopState()
+        {
+            currentState.RemoveAt(currentState.Count - 1);
         }
     }
 }

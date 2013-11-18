@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using GameDesign_2.Components;
 using GameDesign_2.Components.Player;
+using GameDesign_2.States.GameStates;
 using Microsoft.Xna.Framework;
 
 namespace GameDesign_2.Screens.GameplayScreens
@@ -150,6 +151,9 @@ namespace GameDesign_2.Screens.GameplayScreens
             {
                 sin.AddGraph((float)randy.NextDouble() + 2.0f, i, (float)randy.NextDouble() + 0.5f);
             }
+
+            int[] borders = {25, 75};
+            CurrentState = new RegularState(this, borders);
 
             base.Initialize();
         }

@@ -20,6 +20,7 @@ namespace GameDesign_2
     public class Game1 : Game
     {
         public Camera2D Camera { get; private set; }
+        public Color Background { get; set; }
 
         private ScreenManager manager;
 
@@ -53,6 +54,7 @@ namespace GameDesign_2
             Spawner.GetInstance().Game = this;
 
             Components.Add(Camera = new Camera2D(this));
+            Background = Color.CornflowerBlue;
 
             base.Initialize();
         }
@@ -82,7 +84,7 @@ namespace GameDesign_2
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Background);
 
             base.Draw(gameTime);
 

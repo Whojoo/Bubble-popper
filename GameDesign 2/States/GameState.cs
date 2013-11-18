@@ -15,7 +15,7 @@ namespace GameDesign_2.States
             Parent = parent;
         }
 
-        public void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        public virtual void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
         }
     }
