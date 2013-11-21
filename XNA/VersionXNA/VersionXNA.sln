@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionXNA", "VersionXNA\VersionXNA\VersionXNA.csproj", "{CC4EFCFA-312B-4347-AF79-7959CBBC0025}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "VersionXNAContent", "VersionXNA\VersionXNAContent\VersionXNAContent.contentproj", "{BAF528DA-5328-4C0A-A2F4-87CADC4C355F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CC4EFCFA-312B-4347-AF79-7959CBBC0025}.Debug|x86.ActiveCfg = Debug|x86
+		{CC4EFCFA-312B-4347-AF79-7959CBBC0025}.Debug|x86.Build.0 = Debug|x86
+		{CC4EFCFA-312B-4347-AF79-7959CBBC0025}.Release|x86.ActiveCfg = Release|x86
+		{CC4EFCFA-312B-4347-AF79-7959CBBC0025}.Release|x86.Build.0 = Release|x86
+		{BAF528DA-5328-4C0A-A2F4-87CADC4C355F}.Debug|x86.ActiveCfg = Debug|x86
+		{BAF528DA-5328-4C0A-A2F4-87CADC4C355F}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
