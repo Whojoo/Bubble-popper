@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using GameDesign_2.Components.Sensors;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -45,6 +46,15 @@ namespace GameDesign_2.Components
                 return false;
             }
 
+            //If this is a sensor then this point would never be reached, so...
+            //Is the other a sensor?
+            if (other.Shape == Shape.Sensor)
+            {
+                //Make sure the sensor becomes a 'this' and then end this check.
+                other.CheckCollisionWith(gameTime, this);
+                return false;
+            }
+
             //Is this a circle?
             if (Shape == Shape.Circle)
             {
@@ -79,7 +89,7 @@ namespace GameDesign_2.Components
         /// Check if 2 box shaped objects collide.
         /// </summary>
         /// <param name="other">The other box.</param>
-        private bool BoxBoxCollision(GDComp other)
+        public bool BoxBoxCollision(GDComp other)
         {
             bool left, right, up, down;
 
@@ -97,7 +107,7 @@ namespace GameDesign_2.Components
         /// This function assumes that this is the circle and the other a the box.
         /// </summary>
         /// <param name="other">The box.</param>
-        private bool CircleBoxCollision(GDComp other)
+        public bool CircleBoxCollision(GDComp other)
         {
             //Calculate the distance between origins.
             Vector2 circleDist = new Vector2();
@@ -129,7 +139,7 @@ namespace GameDesign_2.Components
         /// Checks if 2 circles collide or not.
         /// </summary>
         /// <param name="other">The other circle.</param>
-        protected bool CircleCircleCollision(GDComp other)
+        public bool CircleCircleCollision(GDComp other)
         {
             //Simple collision check using both the circles' radius.
             float distSQ = (position - other.Position).LengthSquared();
@@ -182,6 +192,7 @@ namespace GameDesign_2.Components
     {
         Circle,
         Box,
+        Sensor,
         None
     }
 }
