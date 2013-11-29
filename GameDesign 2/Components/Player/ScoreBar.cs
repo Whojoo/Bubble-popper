@@ -47,6 +47,7 @@ namespace GameDesign_2.Components.Player
         private Texture2D texture;
         private bool isTimeLimited = false;
         private Vector2 scale;
+        private SpriteFont font;
         
         /// <summary>
         /// Basic ScoreBar with no time limit.
@@ -97,6 +98,7 @@ namespace GameDesign_2.Components.Player
         {
             ContentManager content = GDGame.GetActiveScreen().Content;
             texture = content.Load<Texture2D>("square");
+            font = content.Load<SpriteFont>("GDFont");
 
             Origin = new Vector2(texture.Width * 0.5f, texture.Height * 0.5f);
 
@@ -277,6 +279,13 @@ namespace GameDesign_2.Components.Player
             //Now draw the bar.
             batch.Draw(texture, cBarPos, null, color, rotation, new Vector2(0, texture.Height * 0.5f), 
                 cBarScale, effect, depth);
+
+            //Now the multiply text.
+            float multiplier = ((GameplayScreen)GDGame.GetActiveScreen()).Player.Multiplier;
+            Vector2 textPos = new Vector2(Position.X, 
+                Position.Y + font.MeasureString(multiplier.ToString()).Y * 1.5f);
+
+            batch.DrawString(font, multiplier.ToString(), textPos, Color.Black);
 
             base.Draw(gameTime, batch);
         }
