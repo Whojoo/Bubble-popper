@@ -41,7 +41,8 @@ namespace GameDesign_2
         private List<SpawnPortal> portals;
 
         //Used to circle through spawnlocations.
-        private int portalIndex;
+        private int friendlyPortalIndex;
+        private int enemyPortalIndex;
 
         //Used to keep track of friendlies and enemies.
         private int enemies;
@@ -57,7 +58,8 @@ namespace GameDesign_2
             MinimumAlive = DefaultMinimum;
             MaximumAlive = DefaultMaximum;
 
-            portalIndex = 0;
+            friendlyPortalIndex = 0;
+            enemyPortalIndex = 0;
 
             enemies = 0;
             friendlies = 0;
@@ -81,10 +83,16 @@ namespace GameDesign_2
         /// Adds a ScoreBall to the game.
         /// </summary>
         /// <param name="portal"></param>
-        private void AddBall(SpawnPortal portal)
+        private void AddBall()
         {
             ScoreBall ball;
             int lastInGraveyard = graveyard.Count - 1;
+
+            //Do we need an enemy?
+            bool isEnemy = enemies == 0 || (int)(friendlies / enemies) >= friendliesPerEnemies;
+
+            //Get the right portal.
+            SpawnPortal portal = GetNextPortal(isEnemy);
 
             //Get a ScoreBall from the graveyard or create a new one.
             if (lastInGraveyard >= 0)
@@ -105,7 +113,7 @@ namespace GameDesign_2
             ball.Initialize();
 
             //Do we need a friendly?
-            if (enemies != 0 && ((int)friendlies / enemies) < friendliesPerEnemies)
+            if (!isEnemy)
             {
                 ball.ChangeState(ScoreBall.State.Friendly);
                 friendlies++;
@@ -198,16 +206,21 @@ namespace GameDesign_2
         /// Get a portal from the portal list. This function makes sure you
         /// circle through all the portals.
         /// </summary>
+        /// <param name="isEnemy">Are we spawning an enemy?</param>
         /// <returns>A SpawnPortal for a location to spawn.</returns>
-        private SpawnPortal GetNextPortal()
+        private SpawnPortal GetNextPortal(bool isEnemy)
         {
-            SpawnPortal toReturn = portals[portalIndex++];
-            if (portalIndex >= portals.Count)
+            //Return the right portal depending on enemy or friendly.
+            if (isEnemy)
             {
-                portalIndex = 0;
+                return portals[enemyPortalIndex >= portals.Count ?
+                    (enemyPortalIndex = 0) : enemyPortalIndex++];
             }
-
-            return toReturn;
+            else
+            {
+                return portals[friendlyPortalIndex >= portals.Count ?
+                    (friendlyPortalIndex = 0) : friendlyPortalIndex++];
+            }
         }
 
         /// <summary>
@@ -250,7 +263,7 @@ namespace GameDesign_2
             //Put the variables back to default.
             MinimumAlive = DefaultMinimum;
             MaximumAlive = DefaultMaximum;
-            portalIndex = 0;
+            friendlyPortalIndex = 0;
 
             //Reset the counters.
             friendlies = 0;
@@ -283,7 +296,7 @@ namespace GameDesign_2
             //Add the ScoreBalls.
             for (int i = 0; i < toAdd; i++)
             {
-                AddBall(GetNextPortal());
+                AddBall();
             }
         }
 
