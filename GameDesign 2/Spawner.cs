@@ -236,11 +236,15 @@ namespace GameDesign_2
         {
             portals.Clear();
 
-            //Add all active balls to the graveyard.
-            foreach (ScoreBall ball in active)
+            //Unload and clear the graveyard.
+            foreach (GDComp comp in graveyard)
             {
-                graveyard.Add(ball);
+                comp.Unload();
+                comp.Dispose();
             }
+            graveyard.Clear();
+
+            //Clear the active list. They are unloaded by GameplayScreen.
             active.Clear();
 
             //Put the variables back to default.
