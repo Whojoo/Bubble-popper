@@ -12,7 +12,7 @@ namespace GameDesign_2.Screens.GameplayScreens
     public class DynamicsScreen : GameplayScreen
     {
         public DynamicsScreen(Game1 game)
-            : base(game, new Vector2(1840, 1500), 100000)
+            : base(game, new Vector2(1840, 1500))
         {
         }
 
@@ -141,7 +141,7 @@ namespace GameDesign_2.Screens.GameplayScreens
             //Change spawner default values.
             spawner.MaximumAlive = 200;
             spawner.MinimumAlive = 100;
-            spawner.FriendliesPerEnemies = 1;
+            spawner.FriendliesPerEnemies = 2;
 
             //Now add some numbers to the sinusoid instance.
             Sinusoid sin = Sinusoid.GetInstance();

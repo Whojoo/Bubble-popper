@@ -11,23 +11,13 @@ namespace GameDesign_2.Components.Player
     public class PlayerBall : Ball
     {
         private const float PlayerRadius = 30;
-        //Time border for the multipier.
-        private const float MultiplierTimeBorder = 5;
 
         public ScoreBar ScoreBar { get; private set; }
 
-        private int goalScore;
-
-        //Multiplier variables.
-        private float multiplier;
-        private float multiplierTimer;
-        private float multiplierCounter;
-
-        public PlayerBall(Game1 game, Vector2 position, int goalScore)
+        public PlayerBall(Game1 game, Vector2 position)
             : base(game, position, PlayerRadius)
         {
-            ScoreBar = new ScoreBar(game, goalScore);
-            this.goalScore = goalScore;
+            ScoreBar = new ScoreBar(game);
             Color = Color.Blue;
             Scale = 1;
         }
@@ -44,25 +34,14 @@ namespace GameDesign_2.Components.Player
             //Add the scoreBar.
             GDGame.GetActiveScreen().HuDComponents.Add(ScoreBar);
 
-            //Reset the multiplier logic.
-            ResetMultiplier();
-
             base.Initialize();
         }
 
-        public void AddScore(int amount)
+        public void AddScore()
         {
-            const float AddPercentage = 0.025f;
+            const float AddPercentage = 2.5f;
 
-            ScoreBar.AddScore((int)(goalScore * AddPercentage * multiplier));
-
-            multiplierCounter++;
-            multiplierTimer = 0;
-            if (multiplierCounter >= 5)
-            {
-                multiplier += 0.25f;
-                multiplierCounter = 0;
-            }
+            ScoreBar.AddScore(AddPercentage);
         }
 
         public override bool CheckCollisionWith(GameTime gameTime, GDComp other)
@@ -100,32 +79,16 @@ namespace GameDesign_2.Components.Player
             //Last frame's timestep.
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            //Multiplier logic.
-            multiplierTimer += dt;
-            if (multiplierTimer >= MultiplierTimeBorder)
-            {
-                ResetMultiplier();
-            }
-
             //Collision handling uses a frame's velocity, which is multiplied by the elapsed time.
             //But the player's velocity is equal to real time mouse movement.
             //So to prevent errors, we have to divide the velocity by the elapsed time.
             Velocity /= dt;
         }
 
-        private void ResetMultiplier()
-        {
-            multiplierTimer = 0;
-            multiplier = 1;
-            multiplierCounter = 0;
-        }
-
         public void SubtractScore()
         {
-            ScoreBar.SubtractScore((int)(goalScore * 0.025f));
-
-            //Reset the multiplier.
-            ResetMultiplier();
+            const float PercentDroppedByEnemy = 2.5f;
+            ScoreBar.SubtractScore(PercentDroppedByEnemy, true);
         }
 
         public override void Update(GameTime gameTime)
@@ -164,17 +127,6 @@ namespace GameDesign_2.Components.Player
             set
             {
                 base.HalfSize = value;
-            }
-        }
-
-        /// <summary>
-        /// Get the current multiplier.
-        /// </summary>
-        public float Multiplier
-        {
-            get
-            {
-                return multiplier;
             }
         }
     }

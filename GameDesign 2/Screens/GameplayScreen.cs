@@ -23,7 +23,7 @@ namespace GameDesign_2.Screens
         private Vector2 worldSize;
         private List<IState> currentState;
 
-        public GameplayScreen(Game1 game, Vector2 worldSize, int goalScore)
+        public GameplayScreen(Game1 game, Vector2 worldSize)
             : base(game)
         {
             this.worldSize = worldSize;
@@ -38,7 +38,7 @@ namespace GameDesign_2.Screens
             Components.Add(new Wall(GDGame, new Vector2(-10, 0), new Vector2(0, worldSize.Y + 10)));
 
             //Add the player to world.
-            Components.Add(Player = new PlayerBall(GDGame, new Vector2(300, 300), goalScore));
+            Components.Add(Player = new PlayerBall(GDGame, new Vector2(300, 300)));
 
             //Give the camera the new world size.
             GDGame.Camera.WorldSize = worldSize + new Vector2(0, 100);

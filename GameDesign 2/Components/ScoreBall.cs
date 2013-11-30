@@ -139,15 +139,13 @@ namespace GameDesign_2.Components
                 return;
             }
 
-            const int AddScore = 50;
-
             switch (ScoreState)
             {
                 case State.Enemy:
                     playerBall.SubtractScore();
                     break;
                 case State.Friendly:
-                    playerBall.AddScore(AddScore);
+                    playerBall.AddScore();
                     break;
             }
 

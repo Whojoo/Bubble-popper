@@ -20,7 +20,11 @@ namespace GameDesign_2.Components.Player
     {
         //Drop the score by 1% after 10 seconds.
         private const int SecondsPerPointDrop = 5;
-        private const int PercentDropByTimeBorder = 1;
+        private const int Goal = 100;
+        private const float PercentDropByTimeBorder = 1f;
+        private const float PercentPerSecond = 2.5f;
+        //Time border for the multipier.
+        private const float MultiplierTimeBorder = 2.5f;
 
         //Bar colors.
         private readonly Color Background = Color.Black;
@@ -34,31 +38,31 @@ namespace GameDesign_2.Components.Player
         //Pixel constant.
         private const int TextureSize = 100;
 
-        private readonly int PercentPerSecond;
-
-        public int Score { get; private set; }
+        public float Score { get; private set; }
         private ScoreState State { get; set; }
 
-        private int toAdd;
-        private int toSubtract;
-        private int goalScore;
+        private float toAdd;
+        private float toSubtract;
         private float timeCounter;
         private float timeLeft;
         private Texture2D texture;
         private bool isTimeLimited = false;
         private Vector2 scale;
         private SpriteFont font;
+
+        //Multiplier variables.
+        private float multiplier;
+        private float multiplierTimer;
+        private float multiplierCounter;
+        private bool resetMultiplier;
         
         /// <summary>
         /// Basic ScoreBar with no time limit.
         /// </summary>
         /// <param name="game">The current running game.</param>
-        /// <param name="goalScore">The level's goal score.</param>
-        public ScoreBar(Game1 game, int goalScore)
+        public ScoreBar(Game1 game)
             : base(game, Shape.None, SetPosition(game), SetHalfSize(game))
         {
-            this.goalScore = goalScore;
-            PercentPerSecond = (int)(goalScore * 0.05f);
             timeCounter = 0;
         }
 
@@ -68,8 +72,8 @@ namespace GameDesign_2.Components.Player
         /// <param name="game">The current running game.</param>
         /// <param name="goalScore">The level's goal score.</param>
         /// <param name="timeLimit">The level's timelimit (0 means no limit).</param>
-        public ScoreBar(Game1 game, int goalScore, float timeLimit)
-            : this(game, goalScore)
+        public ScoreBar(Game1 game, float timeLimit)
+            : this(game)
         {
             isTimeLimited = timeLimit > 0;
 
@@ -81,9 +85,11 @@ namespace GameDesign_2.Components.Player
 
         public override void Initialize()
         {
-            Score = (int)(goalScore * 0.05f);
+            Score = 5f;
             toAdd = 0;
             toSubtract = 0;
+
+            ResetMultiplier();
 
             State = ScoreState.Balance;
 
@@ -110,7 +116,7 @@ namespace GameDesign_2.Components.Player
         /// Score subtraction has priority over addition.
         /// </summary>
         /// <param name="amount">Amount of score the player has earned.</param>
-        public void AddScore(int amount)
+        public void AddScore(float amount)
         {
             if (amount < 0)
             {
@@ -118,11 +124,27 @@ namespace GameDesign_2.Components.Player
             }
 
             toAdd += amount;
+
+            multiplierCounter++;
+            multiplierTimer = 0;
+            if (multiplierCounter >= 5)
+            {
+                multiplier += 0.25f;
+                multiplierCounter = 0;
+            }
         }
 
         public float GetScorePercentage()
         {
-            return (float)Score / (float)goalScore * 100;
+            return Score;
+        }
+
+        private void ResetMultiplier()
+        {
+            multiplierTimer = 0;
+            multiplier = 1;
+            multiplierCounter = 0;
+            resetMultiplier = false;
         }
 
         /// <summary>
@@ -130,16 +152,20 @@ namespace GameDesign_2.Components.Player
         /// Score subtraction has priority over addition.
         /// </summary>
         /// <param name="amount">Amount of score the player has lossed.</param>
-        public void SubtractScore(int amount)
+        /// <param name="hitByBall">Did the player hit a ball?</param>
+        public void SubtractScore(float amount, bool hitByBall)
         {
             if (amount < 0)
             {
                 amount = Math.Abs(amount);
             }
 
-            toSubtract += amount;
+            if (hitByBall)
+            {
+                resetMultiplier = true;
+            }
 
-            State = ScoreState.Loss;
+            toSubtract += amount;
         }
 
         /// <summary>
@@ -176,12 +202,14 @@ namespace GameDesign_2.Components.Player
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
             
             //First calculate how many points max can be add or subtracted this frame.
-            int pointsThisFrame = (int)(PercentPerSecond * dt);
+            float pointsThisFrame = (PercentPerSecond * dt * multiplier);
 
             //Are there points to subtract?
             if (toSubtract > 0)
             {
-                int loss = pointsThisFrame;
+                State = ScoreState.Loss;
+
+                float loss = pointsThisFrame;
                 if (toSubtract < pointsThisFrame)
                 {
                     loss = toSubtract;
@@ -192,10 +220,17 @@ namespace GameDesign_2.Components.Player
                 toSubtract -= loss;
             }
             //Are there points to add?
-            else if (toAdd > 0 && Score < goalScore)
+            else if (toAdd > 0 && Score < Goal)
             {
+                //Do we have to reset the multiplier?
+                if (resetMultiplier)
+                {
+                    pointsThisFrame = (int)(pointsThisFrame / multiplier);
+                    ResetMultiplier();
+                }
+
                 State = ScoreState.Gain;
-                int gain = pointsThisFrame;
+                float gain = pointsThisFrame;
 
                 if (toAdd < pointsThisFrame)
                 {
@@ -216,9 +251,16 @@ namespace GameDesign_2.Components.Player
             {
                 (GDGame.GetActiveScreen() as GameplayScreen).GameOver();
             }
-            else if (Score >= goalScore)
+            else if (Score >= Goal)
             {
                 (GDGame.GetActiveScreen() as GameplayScreen).Won();
+            }
+
+            //Multiplier logic.
+            multiplierTimer += dt;
+            if (multiplierTimer >= MultiplierTimeBorder)
+            {
+                ResetMultiplier();
             }
 
             //Lastly the time.
@@ -226,7 +268,7 @@ namespace GameDesign_2.Components.Player
             if (timeCounter >= SecondsPerPointDrop)
             {
                 timeCounter -= SecondsPerPointDrop;
-                SubtractScore((int)(PercentDropByTimeBorder * 0.01f * goalScore));
+                SubtractScore(PercentDropByTimeBorder, false);
             }
 
             if (isTimeLimited)
@@ -281,21 +323,32 @@ namespace GameDesign_2.Components.Player
                 cBarScale, effect, depth);
 
             //Now the multiply text.
-            float multiplier = ((GameplayScreen)GDGame.GetActiveScreen()).Player.Multiplier;
-            Vector2 textPos = new Vector2(Position.X, 
-                Position.Y + font.MeasureString(multiplier.ToString()).Y * 1.5f);
+            string text = "Multiplier: x" + multiplier.ToString();
+            Vector2 textSize = font.MeasureString(text);
+            Vector2 textPos = new Vector2(Position.X,
+                Position.Y + textSize.Y * 1.5f);
 
-            batch.DrawString(font, multiplier.ToString(), textPos, Color.Black);
+            batch.DrawString(font, text, textPos, Color.Black, 0, textSize * 0.5f, 1, SpriteEffects.None, 0);
 
             base.Draw(gameTime, batch);
         }
-
 
         public override void Unload()
         {
             texture.Dispose();
 
             base.Unload();
+        }
+
+        /// <summary>
+        /// Get the current multiplier.
+        /// </summary>
+        public float Multiplier
+        {
+            get
+            {
+                return multiplier;
+            }
         }
     }
 
