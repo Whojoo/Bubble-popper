@@ -73,7 +73,7 @@ namespace GameDesign_2.Components
 
             if (other is Player.PlayerBall && other.CircleBoxCollision(this))
             {
-                other.Position -= other.Velocity * dt * dt;
+                other.Position -= other.Velocity * dt;
             }
 
             //Calculate the connectionline.
