@@ -10,18 +10,11 @@ namespace GameDesign_2
 {
     public class Spawner
     {
-        private const int DefaultMinimum = 100;
         private const int DefaultMaximum = 1000;
         private const int DefaultFriendliesPerEnemies = 20;
 
         //Use a spawns per frame since the Spawner will compensate when we get below minimum.
         private const int SpawnsPerFrame = 1;
-
-        /// <summary>
-        /// The minimum amount of ScoreBall balls that have to be active.
-        /// Default = 100.
-        /// </summary>
-        public int MinimumAlive { get; set; }
 
         /// <summary>
         /// The maximum amount of ScoreBalls that can be active.
@@ -55,7 +48,6 @@ namespace GameDesign_2
             active = new List<ScoreBall>();
             portals = new List<SpawnPortal>();
 
-            MinimumAlive = DefaultMinimum;
             MaximumAlive = DefaultMaximum;
 
             friendlyPortalIndex = 0;
@@ -152,21 +144,21 @@ namespace GameDesign_2
                 PlayerBall player = (Game.GetActiveScreen() as GameplayScreen).Player;
 
                 //Make sure the ScoreBalls aren't about to hit the player.
-                const float SafeRangeMultiplier = 4;
+                const float SafeRangeMultiplier = 1.5f;
                 float requiredDistSQ = player.HalfSize.X * SafeRangeMultiplier;
                 requiredDistSQ *= requiredDistSQ;
 
                 int i = 0;
                 while (i < difference)
                 {
-                    if ((active[i].Position - player.Position).LengthSquared() < requiredDistSQ)
-                    {
-                        continue;
-                    }
-                    else if (i == active.Count)
+                    if (i == active.Count)
                     {
                         //Don't go beyond the active counter.
                         return;
+                    }
+                    else if ((active[i++].Position - player.Position).LengthSquared() < requiredDistSQ)
+                    {
+                        continue;
                     }
 
                     active[i].ChangeState(ScoreBall.State.Enemy);
@@ -261,7 +253,6 @@ namespace GameDesign_2
             active.Clear();
 
             //Put the variables back to default.
-            MinimumAlive = DefaultMinimum;
             MaximumAlive = DefaultMaximum;
             friendlyPortalIndex = 0;
 
@@ -273,19 +264,9 @@ namespace GameDesign_2
 
         public void Update()
         {
-            int toAdd = SpawnsPerFrame;
-            int totalActive = active.Count;
-            
             //Check if there is need for more or less ScoreBalls.
-            if (totalActive < MinimumAlive)
-            {
-                //Don't catch up to quickly. if we lack 10 then 1 extra this frame will be fine.
-                toAdd += (int)((MinimumAlive - totalActive) * 0.1f);
-            }
-            else if (totalActive >= MaximumAlive)
-            {
-                toAdd = 0;
-            }
+            int totalActive = active.Count;
+            int toAdd = totalActive >= MaximumAlive ? 0 : SpawnsPerFrame;
 
             //Can we spawn anything?
             if (portals.Count == 0)

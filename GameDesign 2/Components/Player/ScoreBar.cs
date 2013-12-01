@@ -15,6 +15,8 @@ namespace GameDesign_2.Components.Player
     /// The gained or lossed score adds at X% per second. 
     /// The players looses score after a certain amount of time.
     /// Score subtraction has priority over score addition.
+    /// The player can build up a multiplier but hitting an enemy will also drop with
+    /// that same multiplier before the multiplier is reset.
     /// </summary>
     public class ScoreBar : GDComp
     {
@@ -260,6 +262,9 @@ namespace GameDesign_2.Components.Player
             multiplierTimer += dt;
             if (multiplierTimer >= MultiplierTimeBorder)
             {
+                //Empty toAdd if multiplier falls.
+                toAdd = 0;
+
                 ResetMultiplier();
             }
 
