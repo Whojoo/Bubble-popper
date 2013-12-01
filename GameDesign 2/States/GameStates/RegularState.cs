@@ -25,6 +25,12 @@ namespace GameDesign_2.States.GameStates
             this.isTough = isTough;
         }
 
+        public override void Activate()
+        {
+            Parent.Screen.GDGame.Background = isTough ? 
+                Color.CadetBlue : Color.CornflowerBlue;
+        }
+
         private int GetNextBorder(GameplayScreen screen, int[] agroBorders)
         {
             int score = (int)screen.Player.ScoreBar.GetScorePercentage();

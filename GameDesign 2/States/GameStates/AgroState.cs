@@ -13,7 +13,7 @@ namespace GameDesign_2.States.GameStates
     {
         //The marge the player has to get out of.
         private const int percentalMarge = 10;
-        private const int agroDist = 150;
+        private const int agroDist = 250;
 
         private int agroBorder;
         private int oldBalance;
@@ -22,9 +22,13 @@ namespace GameDesign_2.States.GameStates
             : base(parent)
         {
             this.agroBorder = agroBorder;
-            parent.Screen.GDGame.Background = Color.Black;
             oldBalance = Spawner.GetInstance().FriendliesPerEnemies;
             Spawner.GetInstance().FriendliesPerEnemies = 1;
+        }
+
+        public override void Activate()
+        {
+            Parent.Screen.GDGame.Background = Color.Black;
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
