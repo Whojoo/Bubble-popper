@@ -17,7 +17,7 @@ namespace GameDesign_2.States.GameStates
         private bool recheckBorder = false;
         private bool isTough;
 
-        public RegularState(StateMachine parent, int[] agroBorders, bool isTough)
+        public RegularState(StateMachine parent, bool isTough, params int[] agroBorders)
             : base(parent)
         {
             borders = agroBorders;
@@ -29,6 +29,7 @@ namespace GameDesign_2.States.GameStates
         {
             Parent.Screen.GDGame.Background = isTough ? 
                 Color.CadetBlue : Color.CornflowerBlue;
+            base.Activate();
         }
 
         private int GetNextBorder(GameplayScreen screen, int[] agroBorders)
