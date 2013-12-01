@@ -195,6 +195,17 @@ namespace GameDesign_2
         }
 
         /// <summary>
+        /// Clears the playingfield.
+        /// </summary>
+        public void Clear()
+        {
+            foreach (ScoreBall comp in active)
+            {
+                RemoveBall(comp);
+            }
+        }
+
+        /// <summary>
         /// Get a portal from the portal list. This function makes sure you
         /// circle through all the portals.
         /// </summary>
