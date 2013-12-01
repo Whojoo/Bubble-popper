@@ -25,6 +25,8 @@ namespace GameDesign_2.Components.Player
         private const int Goal = 100;
         private const float PercentDropByTimeBorder = 1f;
         private const float PercentPerSecond = 2.5f;
+        //Stop dropping scores after 5 seconds.
+        private const float ScoreDropTimeLimit = 5f;
         //Time border for the multipier.
         private const float MultiplierTimeBorder = 2.5f;
 
@@ -47,6 +49,7 @@ namespace GameDesign_2.Components.Player
         private float toSubtract;
         private float timeCounter;
         private float timeLeft;
+        private float scoreDropTimer;
         private Texture2D texture;
         private bool isTimeLimited = false;
         private Vector2 scale;
@@ -90,6 +93,8 @@ namespace GameDesign_2.Components.Player
             Score = 5f;
             toAdd = 0;
             toSubtract = 0;
+
+            scoreDropTimer = 0;
 
             ResetMultiplier();
 
@@ -220,10 +225,20 @@ namespace GameDesign_2.Components.Player
 
                 Score -= loss;
                 toSubtract -= loss;
+
+                //Have we reached the drop limit?
+                scoreDropTimer += dt;
+                if (scoreDropTimer >= ScoreDropTimeLimit)
+                {
+                    toSubtract = 0;
+                }
             }
             //Are there points to add?
             else if (toAdd > 0 && Score < Goal)
             {
+                //Reset the scoreDropTimer.
+                scoreDropTimer = 0;
+
                 //Do we have to reset the multiplier?
                 if (resetMultiplier)
                 {
@@ -245,6 +260,9 @@ namespace GameDesign_2.Components.Player
             }
             else
             {
+                //Reset the scoreDropTimer.
+                scoreDropTimer = 0;
+
                 State = ScoreState.Balance;
             }
 
