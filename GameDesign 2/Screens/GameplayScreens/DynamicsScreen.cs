@@ -155,7 +155,7 @@ namespace GameDesign_2.Screens.GameplayScreens
             int[] borders = {25, 75};
 
             StateMachine = new RegularStateMachine(this);
-            StateMachine.PushState(new RegularState(StateMachine, borders));
+            StateMachine.PushState(new RegularState(StateMachine, borders, true));
 
             base.Initialize();
         }

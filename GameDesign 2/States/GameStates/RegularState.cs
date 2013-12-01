@@ -2,21 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using GameDesign_2.Components;
+using GameDesign_2.Components.Player;
 using GameDesign_2.Screens;
+using Microsoft.Xna.Framework;
 
 namespace GameDesign_2.States.GameStates
 {
     public class RegularState : GameState
     {
-        private int agroBorder;
+        public int AgroBorder { get; private set; }
+
         private int[] borders;
         private bool recheckBorder = false;
+        private bool isTough;
 
-        public RegularState(StateMachine parent, int[] agroBorders)
+        public RegularState(StateMachine parent, int[] agroBorders, bool isTough)
             : base(parent)
         {
             borders = agroBorders;
-            agroBorder = GetNextBorder(parent.Screen, agroBorders);
+            AgroBorder = GetNextBorder(parent.Screen, agroBorders);
+            this.isTough = isTough;
         }
 
         private int GetNextBorder(GameplayScreen screen, int[] agroBorders)
@@ -39,14 +45,44 @@ namespace GameDesign_2.States.GameStates
         {
             if (recheckBorder)
             {
-                agroBorder = GetNextBorder(Parent.Screen, borders);
+                AgroBorder = GetNextBorder(Parent.Screen, borders);
                 recheckBorder = false;
             }
 
-            if (Parent.Screen.Player.ScoreBar.GetScorePercentage() > agroBorder)
+            if (Parent.Screen.Player.ScoreBar.GetScorePercentage() > AgroBorder)
             {
-                Parent.PushState(new AgroState(Parent, agroBorder));
+                Parent.Proceed(this);
                 recheckBorder = true;
+                return;
+            }
+
+            //Is this the tougher RegularState?
+            if (isTough)
+            {
+                const int agroDist = 100;
+                GameComponentCollection components = Parent.Screen.Components;
+                PlayerBall player = Parent.Screen.Player;
+
+                //Add a small agro radius around each enemy ScoreBall.
+                foreach (GDComp comp in components.OfType<GDComp>().Where<GDComp>(x => x is ScoreBall))
+                {
+                    ScoreBall ball = (ScoreBall)comp;
+
+                    if (ball.ScoreState == ScoreBall.State.Enemy)
+                    {
+                        float dist = (ball.Position - player.Position).Length();
+                        dist -= ball.HalfSize.X + player.HalfSize.X;
+
+                        if (dist < agroDist)
+                        {
+                            ball.Target = player;
+                        }
+                        else
+                        {
+                            ball.Target = null;
+                        }
+                    }
+                }
             }
 
             base.Update(gameTime);

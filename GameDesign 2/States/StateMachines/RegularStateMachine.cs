@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GameDesign_2.Screens;
+using GameDesign_2.States.GameStates;
 using Microsoft.Xna.Framework;
 
 namespace GameDesign_2.States.StateMachines
@@ -19,12 +20,21 @@ namespace GameDesign_2.States.StateMachines
 
         public override void Proceed(GameState caller)
         {
-            Spawner spawner = Spawner.GetInstance();
-
-            if (spawner.FriendliesPerEnemies > 2)
+            if (caller is AgroState)
             {
-                spawner.FriendliesPerEnemies -= 2;
-                spawner.MaximumAlive += 50;
+                //AgroState does all the logic work. No need to add much logic here.
+                Spawner spawner = Spawner.GetInstance();
+
+                if (spawner.FriendliesPerEnemies > 2)
+                {
+                    spawner.FriendliesPerEnemies -= 2;
+                    spawner.MaximumAlive += 50;
+                }
+            }
+            else if (caller is RegularState)
+            {
+                RegularState temp = (RegularState)caller;
+                PushState(new AgroState(this, temp.AgroBorder));
             }
         }
     }
