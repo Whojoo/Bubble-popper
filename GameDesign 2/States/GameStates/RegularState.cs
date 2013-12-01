@@ -12,16 +12,16 @@ namespace GameDesign_2.States.GameStates
         private int[] borders;
         private bool recheckBorder = false;
 
-        public RegularState(GameplayScreen parent, int[] agroBorders)
+        public RegularState(StateMachine parent, int[] agroBorders)
             : base(parent)
         {
             borders = agroBorders;
-            agroBorder = GetNextBorder(parent, agroBorders);
+            agroBorder = GetNextBorder(parent.Screen, agroBorders);
         }
 
-        private int GetNextBorder(GameplayScreen parent, int[] agroBorders)
+        private int GetNextBorder(GameplayScreen screen, int[] agroBorders)
         {
-            int score = (int)parent.Player.ScoreBar.GetScorePercentage();
+            int score = (int)screen.Player.ScoreBar.GetScorePercentage();
 
             for (int i = 0; i < agroBorders.Length; i++)
             {
@@ -31,6 +31,7 @@ namespace GameDesign_2.States.GameStates
                 }
             }
 
+            //No more borders so return max score.
             return 100;
         }
 
@@ -38,13 +39,13 @@ namespace GameDesign_2.States.GameStates
         {
             if (recheckBorder)
             {
-                agroBorder = GetNextBorder(Parent, borders);
+                agroBorder = GetNextBorder(Parent.Screen, borders);
                 recheckBorder = false;
             }
 
-            if (Parent.Player.ScoreBar.GetScorePercentage() > agroBorder)
+            if (Parent.Screen.Player.ScoreBar.GetScorePercentage() > agroBorder)
             {
-                Parent.CurrentState = new AgroState(Parent, agroBorder);
+                Parent.PushState(new AgroState(Parent, agroBorder));
                 recheckBorder = true;
             }
 

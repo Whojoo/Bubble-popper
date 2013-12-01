@@ -8,9 +8,9 @@ namespace GameDesign_2.States
 {
     public class GameState : IState
     {
-        protected GameplayScreen Parent { get; private set; }
+        protected StateMachine Parent { get; private set; }
 
-        public GameState(GameplayScreen parent)
+        public GameState(StateMachine parent)
         {
             Parent = parent;
         }

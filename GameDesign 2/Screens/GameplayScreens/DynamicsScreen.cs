@@ -5,6 +5,7 @@ using System.Text;
 using GameDesign_2.Components;
 using GameDesign_2.Components.Player;
 using GameDesign_2.States.GameStates;
+using GameDesign_2.States.StateMachines;
 using Microsoft.Xna.Framework;
 
 namespace GameDesign_2.Screens.GameplayScreens
@@ -140,8 +141,7 @@ namespace GameDesign_2.Screens.GameplayScreens
 
             //Change spawner default values.
             spawner.MaximumAlive = 200;
-            spawner.MinimumAlive = 100;
-            spawner.FriendliesPerEnemies = 2;
+            spawner.FriendliesPerEnemies = 5;
 
             //Now add some numbers to the sinusoid instance.
             Sinusoid sin = Sinusoid.GetInstance();
@@ -153,7 +153,9 @@ namespace GameDesign_2.Screens.GameplayScreens
             }
 
             int[] borders = {25, 75};
-            CurrentState = new RegularState(this, borders);
+
+            StateMachine = new RegularStateMachine(this);
+            StateMachine.PushState(new RegularState(StateMachine, borders));
 
             base.Initialize();
         }
