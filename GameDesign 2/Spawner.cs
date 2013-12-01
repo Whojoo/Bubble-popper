@@ -82,7 +82,7 @@ namespace GameDesign_2
 
             //Do we need an enemy?
             bool isEnemy = enemies == 0 || (int)(friendlies / enemies) >= friendliesPerEnemies;
-
+            
             //Get the right portal.
             SpawnPortal portal = GetNextPortal(isEnemy);
 
@@ -293,7 +293,7 @@ namespace GameDesign_2
             }
             set
             {
-                if (value <= 0)
+                if (value < 0)
                 {
                     return;
                 }
