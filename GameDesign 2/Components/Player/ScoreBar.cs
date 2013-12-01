@@ -26,7 +26,7 @@ namespace GameDesign_2.Components.Player
         private const float PercentDropByTimeBorder = 1f;
         private const float PercentPerSecond = 2.5f;
         //Stop dropping scores after 5 seconds.
-        private const float ScoreDropTimeLimit = 5f;
+        private const float ScoreDropTimeLimit = 7.5f;
         //Time border for the multipier.
         private const float MultiplierTimeBorder = 2.5f;
 
@@ -139,6 +139,22 @@ namespace GameDesign_2.Components.Player
                 multiplier += 0.25f;
                 multiplierCounter = 0;
             }
+        }
+
+        public void ClearStacks()
+        {
+            toAdd = 0;
+            toSubtract = 0;
+            scoreDropTimer = 0;
+        }
+
+        public void DropScore(float amount)
+        {
+            toAdd = 0;
+            toSubtract = 0;
+            scoreDropTimer = 0;
+
+            Score -= amount;
         }
 
         public float GetScorePercentage()
