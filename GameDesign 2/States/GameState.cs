@@ -18,5 +18,9 @@ namespace GameDesign_2.States
         public virtual void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
         }
+
+        public virtual void Activate()
+        {
+        }
     }
 }

@@ -8,6 +8,7 @@ namespace GameDesign_2.States
 {
     public interface IState
     {
+        void Activate();
         void Update(GameTime gameTime);
     }
 }
