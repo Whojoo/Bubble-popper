@@ -14,6 +14,10 @@ namespace GameDesign_2.Components.Player
 
         public ScoreBar ScoreBar { get; private set; }
 
+        //Score adds or drops on their default values.
+        private float scoreDroppedByEnemy = 5f;
+        private float scoreAddedByFriendly = 2.5f;
+
         public PlayerBall(Game1 game, Vector2 position)
             : base(game, position, PlayerRadius)
         {
@@ -37,11 +41,12 @@ namespace GameDesign_2.Components.Player
             base.Initialize();
         }
 
+        /// <summary>
+        /// This function is called when the player hits a friendly circle.
+        /// </summary>
         public void AddScore()
         {
-            const float AddPercentage = 2.5f;
-
-            ScoreBar.AddScore(AddPercentage);
+            ScoreBar.AddScore(scoreAddedByFriendly);
         }
 
         public override bool CheckCollisionWith(GameTime gameTime, GDComp other)
@@ -72,7 +77,7 @@ namespace GameDesign_2.Components.Player
 
             //Calculate the velocity.
             Velocity = mousePos - center;
-
+            
             //Change the position.
             Position += Velocity;
 
@@ -85,10 +90,12 @@ namespace GameDesign_2.Components.Player
             Velocity /= dt;
         }
 
+        /// <summary>
+        /// This function is called when a enemy circle hits the player.
+        /// </summary>
         public void SubtractScore()
         {
-            const float PercentDroppedByEnemy = 2.5f;
-            ScoreBar.SubtractScore(PercentDroppedByEnemy, true);
+            ScoreBar.SubtractScore(scoreDroppedByEnemy, true);
         }
 
         public override void Update(GameTime gameTime)
@@ -128,6 +135,28 @@ namespace GameDesign_2.Components.Player
             {
                 base.HalfSize = value;
             }
+        }
+
+        /// <summary>
+        /// Get or Set the score added by hitting a friendly.
+        /// Max score is 100.
+        /// Default = 2.5f.
+        /// </summary>
+        public float ScoreAddedByFriendly
+        {
+            get { return scoreAddedByFriendly; }
+            set { scoreAddedByFriendly = value > 0 ? value : scoreAddedByFriendly; }
+        }
+
+        /// <summary>
+        /// Get or Set the score dropped by hitting an enemy.
+        /// Max score is 100.
+        /// Default = 5f.
+        /// </summary>
+        public float ScoreDroppedByEnemy
+        {
+            get { return scoreDroppedByEnemy; }
+            set { scoreDroppedByEnemy = value > 0 ? value : scoreDroppedByEnemy; }
         }
     }
 }
