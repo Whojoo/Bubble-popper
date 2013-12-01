@@ -97,7 +97,7 @@ namespace GameDesign_2.Components
         /// This function assumes that this is the circle and the other a the box.
         /// </summary>
         /// <param name="other">The box.</param>
-        private bool CircleBoxCollision(GDComp other)
+        public bool CircleBoxCollision(GDComp other)
         {
             //Calculate the distance between origins.
             Vector2 circleDist = new Vector2();
@@ -122,7 +122,7 @@ namespace GameDesign_2.Components
             //than the circle's radius.
             float cornerDistSQ = (circleDist - other.HalfSize).LengthSquared();
 
-            return cornerDistSQ <= halfSize.X * halfSize.X;
+            return cornerDistSQ <= HalfSize.X * HalfSize.X;
         }
 
         /// <summary>
