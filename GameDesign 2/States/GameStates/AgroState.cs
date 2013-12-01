@@ -29,6 +29,7 @@ namespace GameDesign_2.States.GameStates
         public override void Activate()
         {
             Parent.Screen.GDGame.Background = Color.Black;
+            base.Activate();
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
