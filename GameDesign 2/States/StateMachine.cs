@@ -27,6 +27,14 @@ namespace GameDesign_2.States
         }
 
         /// <summary>
+        /// Get the top state on the stack.
+        /// </summary>
+        public GameState Peek()
+        {
+            return states[top];
+        }
+
+        /// <summary>
         /// Pushes a new state on the stack.
         /// </summary>
         /// <param name="state">The new state.</param>
@@ -34,6 +42,7 @@ namespace GameDesign_2.States
         {
             states.Add(state);
             top++;
+            state.Activate();
         }
 
         /// <summary>
@@ -50,6 +59,8 @@ namespace GameDesign_2.States
 
             GameState toReturn = states[top];
             states.RemoveAt(top--);
+
+            states[top].Activate();
 
             return toReturn;
         }
