@@ -20,6 +20,9 @@ namespace GameDesign_2.States.StateMachines
 
         public override void Proceed(GameState caller)
         {
+            //Clear the score stacks.
+            Screen.Player.ScoreBar.ClearStacks();
+
             if (caller is AgroState)
             {
                 //AgroState does all the logic work. No need to add much logic here.
