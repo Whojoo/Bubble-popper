@@ -178,7 +178,7 @@ namespace GameDesign_2.Screens
             Manager.Push(new ResultScreen(GDGame, "Aww, you lost :(\nHit enter to continue."));
         }
 
-        public void Won()
+        public virtual void Won()
         {
             Manager.Pop();
             Manager.Push(new ResultScreen(GDGame, "Yay you won!\nHit enter to continue."));
@@ -188,6 +188,11 @@ namespace GameDesign_2.Screens
         {
             get { return stateMachine; }
             set { stateMachine = value; }
+        }
+
+        public Vector2 WorldSize
+        {
+            get { return worldSize; }
         }
     }
 }

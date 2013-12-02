@@ -385,7 +385,7 @@ namespace GameDesign_2.Components.Player
             //Now draw the bar.
             batch.Draw(texture, cBarPos, null, color, rotation, new Vector2(0, texture.Height * 0.5f), 
                 cBarScale, effect, depth);
-            Console.WriteLine(multiplier.ToString());
+            
             //Now the multiply text.
             string text = "Multiplier: x" + multiplier.ToString();
             Vector2 textSize = font.MeasureString(text);
