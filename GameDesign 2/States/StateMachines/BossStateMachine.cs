@@ -34,6 +34,7 @@ namespace GameDesign_2.States.StateMachines
             : base(screen)
         {
             stateNumber = 0;
+            PushState(new TransitionState(this));
         }
 
         public override void Proceed(GameState caller)
