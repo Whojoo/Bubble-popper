@@ -13,7 +13,7 @@ namespace GameDesign_2.States.GameStates
     {
         //The marge the player has to get out of.
         private const int percentalMarge = 10;
-        private const int agroDist = 250;
+        private const int agroDist = 200;
 
         private int agroBorder;
         private int oldBalance;
@@ -23,7 +23,7 @@ namespace GameDesign_2.States.GameStates
         {
             this.agroBorder = agroBorder;
             oldBalance = Spawner.GetInstance().FriendliesPerEnemies;
-            Spawner.GetInstance().FriendliesPerEnemies = 1;
+            Spawner.GetInstance().FriendliesPerEnemies = 2;
         }
 
         public override void Activate()
