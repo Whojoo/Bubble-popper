@@ -62,7 +62,7 @@ namespace GameDesign_2.Screens
             Sinusoid.GetInstance().Update(gameTime);
 
             //Update the Spawner.
-            Spawner.GetInstance().Update();
+            Spawner.GetInstance().Update(gameTime);
 
             if (stateMachine != null)
             {

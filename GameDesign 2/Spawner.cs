@@ -5,6 +5,7 @@ using System.Text;
 using GameDesign_2.Components;
 using GameDesign_2.Components.Player;
 using GameDesign_2.Screens;
+using Microsoft.Xna.Framework;
 
 namespace GameDesign_2
 {
@@ -13,8 +14,12 @@ namespace GameDesign_2
         private const int DefaultMaximum = 500;
         private const int DefaultFriendliesPerEnemies = 10;
 
-        //Use a spawns per frame since the Spawner will compensate when we get below minimum.
-        private const int SpawnsPerFrame = 1;
+        /// <summary>
+        /// At how many seconds do we have to spawn again.
+        /// SpawnTimeBorder = amount / seconds.
+        /// 2.0f / 10.0f would mean 10 spawns per 2 seconds.
+        /// </summary>
+        private const float SpawnTimeBorder = 1.0f / 30.0f;
 
         /// <summary>
         /// The maximum amount of ScoreBalls that can be active.
@@ -33,6 +38,8 @@ namespace GameDesign_2
         private List<ScoreBall> active;
         private List<SpawnPortal> portals;
 
+        private float spawnTimer;
+
         //Used to circle through spawnlocations.
         private int friendlyPortalIndex;
         private int enemyPortalIndex;
@@ -49,6 +56,8 @@ namespace GameDesign_2
             portals = new List<SpawnPortal>();
 
             MaximumAlive = DefaultMaximum;
+
+            spawnTimer = 0;
 
             friendlyPortalIndex = 0;
             enemyPortalIndex = 0;
@@ -209,6 +218,7 @@ namespace GameDesign_2
             {
                 RemoveBall(active[i]);
             }
+            spawnTimer = 0;
         }
 
         /// <summary>
@@ -277,23 +287,23 @@ namespace GameDesign_2
             friendlies = 0;
             enemies = 0;
             friendliesPerEnemies = DefaultFriendliesPerEnemies;
+            spawnTimer = 0;
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
-            //Check if there is need for more or less ScoreBalls.
-            int totalActive = active.Count;
-            int toAdd = totalActive >= MaximumAlive ? 0 : SpawnsPerFrame;
-
             //Can we spawn anything?
             if (portals.Count == 0)
             {
                 return;
             }
 
-            //Add the ScoreBalls.
-            for (int i = 0; i < toAdd; i++)
+            //Spawning algorithm.
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            spawnTimer += dt;
+            if (spawnTimer > SpawnTimeBorder)
             {
+                spawnTimer -= SpawnTimeBorder;
                 AddBall();
             }
         }
