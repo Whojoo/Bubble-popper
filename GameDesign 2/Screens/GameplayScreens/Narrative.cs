@@ -6,11 +6,14 @@ using GameDesign_2.Components;
 using GameDesign_2.States.GameStates;
 using GameDesign_2.States.StateMachines;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace GameDesign_2.Screens.GameplayScreens
 {
     public class Narrative : GameplayScreen
     {
+        private KeyboardState last;
+
         public Narrative(Game1 game)
             : base(game, new Vector2(1500, 1500))
         {
@@ -98,7 +101,25 @@ namespace GameDesign_2.Screens.GameplayScreens
             StateMachine = new RegularStateMachine(this);
             StateMachine.PushState(new RegularState(StateMachine, false, 25, 50, 75));
 
+            spawner.MaximumAlive = 200;
+
+            last = Keyboard.GetState();
+
             base.Initialize();
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            KeyboardState current = Keyboard.GetState();
+
+            if (current.IsKeyDown(Keys.Space) && last.IsKeyUp(Keys.Space))
+            {
+                Won();
+            }
+
+            last = current;
+
+            base.Update(gameTime);
         }
 
         public override void Won()
