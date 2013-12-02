@@ -59,8 +59,10 @@ namespace GameDesign_2.States
 
             GameState toReturn = states[top];
             states.RemoveAt(top--);
-
-            states[top].Activate();
+            if (top >= 0)
+            {
+                states[top].Activate();
+            }
 
             return toReturn;
         }

@@ -10,8 +10,8 @@ namespace GameDesign_2
 {
     public class Spawner
     {
-        private const int DefaultMaximum = 1000;
-        private const int DefaultFriendliesPerEnemies = 20;
+        private const int DefaultMaximum = 500;
+        private const int DefaultFriendliesPerEnemies = 10;
 
         //Use a spawns per frame since the Spawner will compensate when we get below minimum.
         private const int SpawnsPerFrame = 1;
@@ -123,7 +123,7 @@ namespace GameDesign_2
         /// </summary>
         private void AdeptScoreBallStates()
         {
-            if (enemies == 0)
+            if (active.Count == 0 || enemies == 0)
             {
                 return;
             }
@@ -161,11 +161,14 @@ namespace GameDesign_2
                         continue;
                     }
 
-                    active[i].ChangeState(ScoreBall.State.Enemy);
+                    if (active[i].ScoreState == ScoreBall.State.Friendly)
+                    {
+                        active[i].ChangeState(ScoreBall.State.Enemy);
 
-                    //Adept the enemies and friendlies counter.
-                    enemies++;
-                    friendlies--;
+                        //Adept the enemies and friendlies counter.
+                        enemies++;
+                        friendlies--;
+                    }
 
                     i++;
                 }
@@ -176,11 +179,14 @@ namespace GameDesign_2
                 //It doesn't matter if the ScoreBalls are close to the player.
                 for (int i = 0; i < difference; i++)
                 {
-                    active[i].ChangeState(ScoreBall.State.Friendly);
+                    if (active[i].ScoreState == ScoreBall.State.Enemy)
+                    {
+                        active[i].ChangeState(ScoreBall.State.Friendly);
 
-                    //Adept the enemies and friendlies counter.
-                    enemies--;
-                    friendlies++;
+                        //Adept the enemies and friendlies counter.
+                        enemies--;
+                        friendlies++;
+                    }
                 }
             }
         }

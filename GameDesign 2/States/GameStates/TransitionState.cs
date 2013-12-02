@@ -33,12 +33,8 @@ namespace GameDesign_2.States.GameStates
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             timer += dt;
-            if (timer >= 1)
+            if (timer >= TransitionTime)
             {
-                float comparison = (timer - 1) / dt;
-                //Don't drop score to low.
-                Parent.Screen.Player.ScoreBar.DropScore(scorePerSecond * dt * comparison);
-
                 Parent.PopState();
                 Parent.Proceed(this);
             }
