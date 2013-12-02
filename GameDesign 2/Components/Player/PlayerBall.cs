@@ -10,7 +10,8 @@ namespace GameDesign_2.Components.Player
 {
     public class PlayerBall : Ball
     {
-        private const float PlayerRadius = 30;
+        private const float MinRadius = 30;
+        private const float MaxRadius = 40;
 
         public ScoreBar ScoreBar { get; private set; }
 
@@ -19,7 +20,7 @@ namespace GameDesign_2.Components.Player
         private float scoreAddedByFriendly = 2.5f;
 
         public PlayerBall(Game1 game, Vector2 position)
-            : base(game, position, PlayerRadius)
+            : base(game, position, MinRadius)
         {
             ScoreBar = new ScoreBar(game);
             Color = Color.Blue;
@@ -110,12 +111,12 @@ namespace GameDesign_2.Components.Player
             float scorePercentage = ScoreBar.GetScorePercentage();
             if (scorePercentage > 25 && scorePercentage <= 80)
             {
-                float growFactor = (120f / 60f) - 1;
+                float growFactor = (MaxRadius / MinRadius) - 1;
                 Scale = 1 + growFactor * ((scorePercentage - 25) / 55f);
             }
             else if (scorePercentage > 80)
             {
-                Scale = 120f / 60f;
+                Scale = MaxRadius / MinRadius;
             }
             else
             {
