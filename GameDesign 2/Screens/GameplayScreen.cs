@@ -58,16 +58,16 @@ namespace GameDesign_2.Screens
 
         public override void Update(GameTime gameTime)
         {
-            if (stateMachine != null)
-            {
-                stateMachine.Update(gameTime);
-            }
-
             //Update the sinusoid graphs.
             Sinusoid.GetInstance().Update(gameTime);
 
             //Update the Spawner.
             Spawner.GetInstance().Update();
+
+            if (stateMachine != null)
+            {
+                stateMachine.Update(gameTime);
+            }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {

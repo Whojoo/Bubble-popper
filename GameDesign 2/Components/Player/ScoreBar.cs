@@ -59,6 +59,7 @@ namespace GameDesign_2.Components.Player
         private float multiplier;
         private float multiplierTimer;
         private float multiplierCounter;
+        private float forcedTimer;
         private bool resetMultiplier;
         
         /// <summary>
@@ -157,6 +158,17 @@ namespace GameDesign_2.Components.Player
             Score -= amount;
         }
 
+        /// <summary>
+        /// Force the multiplier to a certain amount for a certain amount of time.
+        /// </summary>
+        /// <param name="multiplier">The new multiplier.</param>
+        /// <param name="timer">For how long.</param>
+        public void ForceMultiplier(float multiplier, float timer)
+        {
+            forcedTimer = timer;
+            this.multiplier = multiplier;
+        }
+
         public float GetScorePercentage()
         {
             return Score;
@@ -167,7 +179,9 @@ namespace GameDesign_2.Components.Player
             multiplierTimer = 0;
             multiplier = 1;
             multiplierCounter = 0;
+            forcedTimer = 0;
             resetMultiplier = false;
+
         }
 
         /// <summary>
@@ -293,21 +307,32 @@ namespace GameDesign_2.Components.Player
             }
 
             //Multiplier logic.
-            multiplierTimer += dt;
-            if (multiplierTimer >= MultiplierTimeBorder)
+            if (forcedTimer == 0)
             {
-                //Empty toAdd if multiplier falls.
-                toAdd = 0;
+                multiplierTimer += dt;
+                if (multiplierTimer >= MultiplierTimeBorder)
+                {
+                    //Empty toAdd if multiplier falls.
+                    toAdd = 0;
 
-                ResetMultiplier();
+                    ResetMultiplier();
+                }
+
+                //Lastly the time.
+                timeCounter += dt;
+                if (timeCounter >= SecondsPerPointDrop)
+                {
+                    timeCounter -= SecondsPerPointDrop;
+                    SubtractScore(PercentDropByTimeBorder, false);
+                }
             }
-
-            //Lastly the time.
-            timeCounter += dt;
-            if (timeCounter >= SecondsPerPointDrop)
+            else
             {
-                timeCounter -= SecondsPerPointDrop;
-                SubtractScore(PercentDropByTimeBorder, false);
+                forcedTimer -= dt;
+                if (forcedTimer <= 0)
+                {
+                    ResetMultiplier();
+                }
             }
 
             if (isTimeLimited)
@@ -360,7 +385,7 @@ namespace GameDesign_2.Components.Player
             //Now draw the bar.
             batch.Draw(texture, cBarPos, null, color, rotation, new Vector2(0, texture.Height * 0.5f), 
                 cBarScale, effect, depth);
-
+            Console.WriteLine(multiplier.ToString());
             //Now the multiply text.
             string text = "Multiplier: x" + multiplier.ToString();
             Vector2 textSize = font.MeasureString(text);

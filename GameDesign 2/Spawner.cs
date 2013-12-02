@@ -199,9 +199,9 @@ namespace GameDesign_2
         /// </summary>
         public void Clear()
         {
-            foreach (ScoreBall comp in active)
+            for (int i = active.Count - 1; i >= 0; i--)
             {
-                RemoveBall(comp);
+                RemoveBall(active[i]);
             }
         }
 

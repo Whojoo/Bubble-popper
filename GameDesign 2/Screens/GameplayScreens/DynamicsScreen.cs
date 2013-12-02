@@ -152,10 +152,8 @@ namespace GameDesign_2.Screens.GameplayScreens
                 sin.AddGraph((float)randy.NextDouble() + 2.0f, i, (float)randy.NextDouble() + 0.5f);
             }
 
-            int[] borders = {25, 75};
-
             StateMachine = new RegularStateMachine(this);
-            StateMachine.PushState(new RegularState(StateMachine, borders, true));
+            StateMachine.PushState(new RegularState(StateMachine, true, 25, 75));
 
             base.Initialize();
         }
