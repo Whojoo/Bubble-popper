@@ -68,7 +68,13 @@ namespace GameDesign_2.Components
             }
 
             //Put the circle back according the velocity.
-            other.Position -= other.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            other.Position -= other.Velocity * dt;
+
+            if (other is Player.PlayerBall && other.CircleBoxCollision(this))
+            {
+                other.Position -= other.Velocity * dt;
+            }
 
             //Calculate the connectionline.
             LineSegment connectionLine = new LineSegment(Position, other.Position);
@@ -121,7 +127,7 @@ namespace GameDesign_2.Components
 
                 }
             }
-
+            
             //Reflect the velocity.
             other.Velocity = Vector2.Reflect(other.Velocity, reflectionVec);
         }

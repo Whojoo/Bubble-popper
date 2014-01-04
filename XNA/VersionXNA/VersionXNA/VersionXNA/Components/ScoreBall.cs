@@ -126,11 +126,10 @@ namespace GameDesign_2.Components
         private Color GetFriendlyColor()
         {
             Random randy = new Random();
-            Color color = new Color(new Vector4(0,
+
+            return new Color(0,
                 randy.Next(150, 250),
-                randy.Next(150, 250),
-                0.05f));
-            return color;
+                randy.Next(150, 250), 0.05f);
         }
 
         private void PlayerHit(PlayerBall playerBall)
@@ -140,15 +139,13 @@ namespace GameDesign_2.Components
                 return;
             }
 
-            const int AddScore = 50;
-
             switch (ScoreState)
             {
                 case State.Enemy:
                     playerBall.SubtractScore();
                     break;
                 case State.Friendly:
-                    playerBall.AddScore(AddScore);
+                    playerBall.AddScore();
                     break;
             }
 

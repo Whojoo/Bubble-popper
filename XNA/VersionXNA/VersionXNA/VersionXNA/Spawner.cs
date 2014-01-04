@@ -5,23 +5,21 @@ using System.Text;
 using GameDesign_2.Components;
 using GameDesign_2.Components.Player;
 using GameDesign_2.Screens;
+using Microsoft.Xna.Framework;
 
 namespace GameDesign_2
 {
     public class Spawner
     {
-        private const int DefaultMinimum = 100;
-        private const int DefaultMaximum = 1000;
-        private const int DefaultFriendliesPerEnemies = 20;
-
-        //Use a spawns per frame since the Spawner will compensate when we get below minimum.
-        private const int SpawnsPerFrame = 1;
+        private const int DefaultMaximum = 500;
+        private const int DefaultFriendliesPerEnemies = 10;
 
         /// <summary>
-        /// The minimum amount of ScoreBall balls that have to be active.
-        /// Default = 100.
+        /// At how many seconds do we have to spawn again.
+        /// SpawnTimeBorder = amount / seconds.
+        /// 2.0f / 10.0f would mean 10 spawns per 2 seconds.
         /// </summary>
-        public int MinimumAlive { get; set; }
+        private const float SpawnTimeBorder = 1.0f / 30.0f;
 
         /// <summary>
         /// The maximum amount of ScoreBalls that can be active.
@@ -40,8 +38,11 @@ namespace GameDesign_2
         private List<ScoreBall> active;
         private List<SpawnPortal> portals;
 
+        private float spawnTimer;
+
         //Used to circle through spawnlocations.
-        private int portalIndex;
+        private int friendlyPortalIndex;
+        private int enemyPortalIndex;
 
         //Used to keep track of friendlies and enemies.
         private int enemies;
@@ -54,10 +55,12 @@ namespace GameDesign_2
             active = new List<ScoreBall>();
             portals = new List<SpawnPortal>();
 
-            MinimumAlive = DefaultMinimum;
             MaximumAlive = DefaultMaximum;
 
-            portalIndex = 0;
+            spawnTimer = 0;
+
+            friendlyPortalIndex = 0;
+            enemyPortalIndex = 0;
 
             enemies = 0;
             friendlies = 0;
@@ -81,10 +84,16 @@ namespace GameDesign_2
         /// Adds a ScoreBall to the game.
         /// </summary>
         /// <param name="portal"></param>
-        private void AddBall(SpawnPortal portal)
+        private void AddBall()
         {
             ScoreBall ball;
             int lastInGraveyard = graveyard.Count - 1;
+
+            //Do we need an enemy?
+            bool isEnemy = enemies == 0 || (int)(friendlies / enemies) >= friendliesPerEnemies;
+            
+            //Get the right portal.
+            SpawnPortal portal = GetNextPortal(isEnemy);
 
             //Get a ScoreBall from the graveyard or create a new one.
             if (lastInGraveyard >= 0)
@@ -105,7 +114,7 @@ namespace GameDesign_2
             ball.Initialize();
 
             //Do we need a friendly?
-            if (enemies != 0 && ((int)friendlies / enemies) < friendliesPerEnemies)
+            if (!isEnemy)
             {
                 ball.ChangeState(ScoreBall.State.Friendly);
                 friendlies++;
@@ -123,7 +132,7 @@ namespace GameDesign_2
         /// </summary>
         private void AdeptScoreBallStates()
         {
-            if (enemies == 0)
+            if (active.Count == 0 || enemies == 0)
             {
                 return;
             }
@@ -144,28 +153,31 @@ namespace GameDesign_2
                 PlayerBall player = (Game.GetActiveScreen() as GameplayScreen).Player;
 
                 //Make sure the ScoreBalls aren't about to hit the player.
-                const float SafeRangeMultiplier = 4;
+                const float SafeRangeMultiplier = 1.5f;
                 float requiredDistSQ = player.HalfSize.X * SafeRangeMultiplier;
                 requiredDistSQ *= requiredDistSQ;
 
                 int i = 0;
                 while (i < difference)
                 {
-                    if ((active[i].Position - player.Position).LengthSquared() < requiredDistSQ)
-                    {
-                        continue;
-                    }
-                    else if (i == active.Count)
+                    if (i == active.Count)
                     {
                         //Don't go beyond the active counter.
                         return;
                     }
+                    else if ((active[i++].Position - player.Position).LengthSquared() < requiredDistSQ)
+                    {
+                        continue;
+                    }
 
-                    active[i].ChangeState(ScoreBall.State.Enemy);
+                    if (active[i].ScoreState == ScoreBall.State.Friendly)
+                    {
+                        active[i].ChangeState(ScoreBall.State.Enemy);
 
-                    //Adept the enemies and friendlies counter.
-                    enemies++;
-                    friendlies--;
+                        //Adept the enemies and friendlies counter.
+                        enemies++;
+                        friendlies--;
+                    }
 
                     i++;
                 }
@@ -176,11 +188,14 @@ namespace GameDesign_2
                 //It doesn't matter if the ScoreBalls are close to the player.
                 for (int i = 0; i < difference; i++)
                 {
-                    active[i].ChangeState(ScoreBall.State.Friendly);
+                    if (active[i].ScoreState == ScoreBall.State.Enemy)
+                    {
+                        active[i].ChangeState(ScoreBall.State.Friendly);
 
-                    //Adept the enemies and friendlies counter.
-                    enemies--;
-                    friendlies++;
+                        //Adept the enemies and friendlies counter.
+                        enemies--;
+                        friendlies++;
+                    }
                 }
             }
         }
@@ -195,19 +210,36 @@ namespace GameDesign_2
         }
 
         /// <summary>
+        /// Clears the playingfield.
+        /// </summary>
+        public void Clear()
+        {
+            for (int i = active.Count - 1; i >= 0; i--)
+            {
+                RemoveBall(active[i]);
+            }
+            spawnTimer = 0;
+        }
+
+        /// <summary>
         /// Get a portal from the portal list. This function makes sure you
         /// circle through all the portals.
         /// </summary>
+        /// <param name="isEnemy">Are we spawning an enemy?</param>
         /// <returns>A SpawnPortal for a location to spawn.</returns>
-        private SpawnPortal GetNextPortal()
+        private SpawnPortal GetNextPortal(bool isEnemy)
         {
-            SpawnPortal toReturn = portals[portalIndex++];
-            if (portalIndex >= portals.Count)
+            //Return the right portal depending on enemy or friendly.
+            if (isEnemy)
             {
-                portalIndex = 0;
+                return portals[enemyPortalIndex >= portals.Count ?
+                    (enemyPortalIndex = 0) : enemyPortalIndex++];
             }
-
-            return toReturn;
+            else
+            {
+                return portals[friendlyPortalIndex >= portals.Count ?
+                    (friendlyPortalIndex = 0) : friendlyPortalIndex++];
+            }
         }
 
         /// <summary>
@@ -236,50 +268,43 @@ namespace GameDesign_2
         {
             portals.Clear();
 
-            //Add all active balls to the graveyard.
-            foreach (ScoreBall ball in active)
+            //Unload and clear the graveyard.
+            foreach (GDComp comp in graveyard)
             {
-                graveyard.Add(ball);
+                comp.Unload();
+                comp.Dispose();
             }
+            graveyard.Clear();
+
+            //Clear the active list. They are unloaded by GameplayScreen.
             active.Clear();
 
             //Put the variables back to default.
-            MinimumAlive = DefaultMinimum;
             MaximumAlive = DefaultMaximum;
-            portalIndex = 0;
+            friendlyPortalIndex = 0;
 
             //Reset the counters.
             friendlies = 0;
             enemies = 0;
             friendliesPerEnemies = DefaultFriendliesPerEnemies;
+            spawnTimer = 0;
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
-            int toAdd = SpawnsPerFrame;
-            int totalActive = active.Count;
-            
-            //Check if there is need for more or less ScoreBalls.
-            if (totalActive < MinimumAlive)
-            {
-                //Don't catch up to quickly. if we lack 10 then 1 extra this frame will be fine.
-                toAdd += (int)((MinimumAlive - totalActive) * 0.1f);
-            }
-            else if (totalActive >= MaximumAlive)
-            {
-                toAdd = 0;
-            }
-
             //Can we spawn anything?
             if (portals.Count == 0)
             {
                 return;
             }
 
-            //Add the ScoreBalls.
-            for (int i = 0; i < toAdd; i++)
+            //Spawning algorithm.
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            spawnTimer += dt;
+            if (spawnTimer > SpawnTimeBorder)
             {
-                AddBall(GetNextPortal());
+                spawnTimer -= SpawnTimeBorder;
+                AddBall();
             }
         }
 
@@ -295,7 +320,7 @@ namespace GameDesign_2
             }
             set
             {
-                if (value <= 0)
+                if (value < 0)
                 {
                     return;
                 }

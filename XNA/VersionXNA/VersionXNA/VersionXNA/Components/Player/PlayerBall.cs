@@ -10,17 +10,19 @@ namespace GameDesign_2.Components.Player
 {
     public class PlayerBall : Ball
     {
-        private const float PlayerRadius = 30;
+        private const float MinRadius = 30;
+        private const float MaxRadius = 40;
 
         public ScoreBar ScoreBar { get; private set; }
 
-        private int goalScore;
+        //Score adds or drops on their default values.
+        private float scoreDroppedByEnemy = 5f;
+        private float scoreAddedByFriendly = 2.5f;
 
-        public PlayerBall(Game1 game, Vector2 position, int goalScore)
-            : base(game, position, PlayerRadius)
+        public PlayerBall(Game1 game, Vector2 position)
+            : base(game, position, MinRadius)
         {
-            ScoreBar = new ScoreBar(game, goalScore);
-            this.goalScore = goalScore;
+            ScoreBar = new ScoreBar(game);
             Color = Color.Blue;
             Scale = 1;
         }
@@ -40,9 +42,12 @@ namespace GameDesign_2.Components.Player
             base.Initialize();
         }
 
-        public void AddScore(int amount)
+        /// <summary>
+        /// This function is called when the player hits a friendly circle.
+        /// </summary>
+        public void AddScore()
         {
-            ScoreBar.AddScore((int)(goalScore * 0.025f));
+            ScoreBar.AddScore(scoreAddedByFriendly);
         }
 
         public override bool CheckCollisionWith(GameTime gameTime, GDComp other)
@@ -73,19 +78,25 @@ namespace GameDesign_2.Components.Player
 
             //Calculate the velocity.
             Velocity = mousePos - center;
-
+            
             //Change the position.
             Position += Velocity;
+
+            //Last frame's timestep.
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             //Collision handling uses a frame's velocity, which is multiplied by the elapsed time.
             //But the player's velocity is equal to real time mouse movement.
             //So to prevent errors, we have to divide the velocity by the elapsed time.
-            Velocity /= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Velocity /= dt;
         }
 
+        /// <summary>
+        /// This function is called when a enemy circle hits the player.
+        /// </summary>
         public void SubtractScore()
         {
-            ScoreBar.SubtractScore((int)(goalScore * 0.025f));
+            ScoreBar.SubtractScore(scoreDroppedByEnemy, true);
         }
 
         public override void Update(GameTime gameTime)
@@ -100,12 +111,12 @@ namespace GameDesign_2.Components.Player
             float scorePercentage = ScoreBar.GetScorePercentage();
             if (scorePercentage > 25 && scorePercentage <= 80)
             {
-                float growFactor = (120f / 60f) - 1;
+                float growFactor = (MaxRadius / MinRadius) - 1;
                 Scale = 1 + growFactor * ((scorePercentage - 25) / 55f);
             }
             else if (scorePercentage > 80)
             {
-                Scale = 120f / 60f;
+                Scale = MaxRadius / MinRadius;
             }
             else
             {
@@ -125,6 +136,28 @@ namespace GameDesign_2.Components.Player
             {
                 base.HalfSize = value;
             }
+        }
+
+        /// <summary>
+        /// Get or Set the score added by hitting a friendly.
+        /// Max score is 100.
+        /// Default = 2.5f.
+        /// </summary>
+        public float ScoreAddedByFriendly
+        {
+            get { return scoreAddedByFriendly; }
+            set { scoreAddedByFriendly = value > 0 ? value : scoreAddedByFriendly; }
+        }
+
+        /// <summary>
+        /// Get or Set the score dropped by hitting an enemy.
+        /// Max score is 100.
+        /// Default = 5f.
+        /// </summary>
+        public float ScoreDroppedByEnemy
+        {
+            get { return scoreDroppedByEnemy; }
+            set { scoreDroppedByEnemy = value > 0 ? value : scoreDroppedByEnemy; }
         }
     }
 }

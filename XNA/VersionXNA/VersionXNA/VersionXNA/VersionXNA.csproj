@@ -29,7 +29,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -89,6 +89,7 @@
     <Compile Include="Components\Ball.cs" />
     <Compile Include="Components\GDComp.cs" />
     <Compile Include="Components\Player\PlayerBall.cs" />
+    <Compile Include="Components\Player\PowerBar.cs" />
     <Compile Include="Components\Player\ScoreBar.cs" />
     <Compile Include="Components\Portal.cs" />
     <Compile Include="Components\ScoreBall.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="ScreenManager.cs" />
     <Compile Include="Screens\GameplayScreen.cs" />
     <Compile Include="Screens\GameplayScreens\DynamicsScreen.cs" />
+    <Compile Include="Screens\GameplayScreens\Narrative.cs" />
     <Compile Include="Screens\MenuScreen.cs" />
     <Compile Include="Screens\MenuScreens\MainMenuScreen.cs" />
     <Compile Include="Screens\MenuScreens\ResultScreen.cs" />
@@ -117,8 +119,13 @@
     <Compile Include="Spawner.cs" />
     <Compile Include="States\GameState.cs" />
     <Compile Include="States\GameStates\AgroState.cs" />
+    <Compile Include="States\GameStates\EnrageState.cs" />
     <Compile Include="States\GameStates\RegularState.cs" />
+    <Compile Include="States\GameStates\TransitionState.cs" />
     <Compile Include="States\IState.cs" />
+    <Compile Include="States\StateMachine.cs" />
+    <Compile Include="States\StateMachines\BossStateMachine.cs" />
+    <Compile Include="States\StateMachines\RegularStateMachine.cs" />
     <Compile Include="States\TextState.cs" />
     <Compile Include="Text\MenuEntry.cs" />
     <Compile Include="Text\TextObject.cs" />

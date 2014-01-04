@@ -5,6 +5,7 @@ using System.Text;
 using GameDesign_2.Components;
 using GameDesign_2.Components.Player;
 using GameDesign_2.States.GameStates;
+using GameDesign_2.States.StateMachines;
 using Microsoft.Xna.Framework;
 
 namespace GameDesign_2.Screens.GameplayScreens
@@ -12,7 +13,7 @@ namespace GameDesign_2.Screens.GameplayScreens
     public class DynamicsScreen : GameplayScreen
     {
         public DynamicsScreen(Game1 game)
-            : base(game, new Vector2(1840, 1500), 100000)
+            : base(game, new Vector2(1840, 1500))
         {
         }
 
@@ -140,8 +141,7 @@ namespace GameDesign_2.Screens.GameplayScreens
 
             //Change spawner default values.
             spawner.MaximumAlive = 200;
-            spawner.MinimumAlive = 100;
-            spawner.FriendliesPerEnemies = 1;
+            spawner.FriendliesPerEnemies = 5;
 
             //Now add some numbers to the sinusoid instance.
             Sinusoid sin = Sinusoid.GetInstance();
@@ -152,8 +152,8 @@ namespace GameDesign_2.Screens.GameplayScreens
                 sin.AddGraph((float)randy.NextDouble() + 2.0f, i, (float)randy.NextDouble() + 0.5f);
             }
 
-            int[] borders = {25, 75};
-            CurrentState = new RegularState(this, borders);
+            StateMachine = new RegularStateMachine(this);
+            StateMachine.PushState(new RegularState(StateMachine, true, 25, 75));
 
             base.Initialize();
         }

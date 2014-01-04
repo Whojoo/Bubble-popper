@@ -12,13 +12,15 @@ namespace GameDesign_2.Screens.MenuScreens
     {
         private enum EntryOption : int
         {
-            Dynamics
+            Dynamics,
+            Narrative
         }
 
         public MainMenuScreen(Game1 game)
             : base(game, "Bubblepopper")
         {
             Entries.Add(new MenuEntry("Dynamics"));
+            Entries.Add(new MenuEntry("Narrative"));
         }
 
         protected override void EntryClicked(int index)
@@ -29,6 +31,9 @@ namespace GameDesign_2.Screens.MenuScreens
             {
                 case (int)EntryOption.Dynamics:
                     Manager.Push(new DynamicsScreen(GDGame));
+                    break;
+                case (int)EntryOption.Narrative:
+                    Manager.Push(new Narrative(GDGame));
                     break;
             }
         }

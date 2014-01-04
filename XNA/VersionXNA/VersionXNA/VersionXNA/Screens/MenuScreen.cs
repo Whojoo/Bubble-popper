@@ -42,6 +42,8 @@ namespace GameDesign_2.Screens
 
             LastState = Keyboard.GetState();
             CurrentIndex = 0;
+
+            game.Background = Color.Black;
         }
 
         protected virtual void HandleInput(GameTime gameTime)

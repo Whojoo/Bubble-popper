@@ -67,8 +67,8 @@ namespace GameDesign_2
             drawingContext.GraphicsDevice = spriteBatch.GraphicsDevice;
 
             manager = new ScreenManager(this, new MainMenuScreen(this));
-            Components.Add(manager);
             manager.Initialize();
+            Components.Add(manager);
         }
 
         protected override void UnloadContent()

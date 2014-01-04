@@ -19,5 +19,9 @@ namespace GameDesign_2.States
         public void Update(GameTime gameTime)
         {
         }
+
+        public void Activate()
+        {
+        }
     }
 }

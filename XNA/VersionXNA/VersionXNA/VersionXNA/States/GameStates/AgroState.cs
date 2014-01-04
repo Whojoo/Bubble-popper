@@ -13,22 +13,30 @@ namespace GameDesign_2.States.GameStates
     {
         //The marge the player has to get out of.
         private const int percentalMarge = 10;
-        private const int agroDist = 150;
+        private const int agroDist = 200;
 
         private int agroBorder;
+        private int oldBalance;
 
-        public AgroState(GameplayScreen parent, int agroBorder)
+        public AgroState(StateMachine parent, int agroBorder)
             : base(parent)
         {
             this.agroBorder = agroBorder;
-            parent.GDGame.Background = Color.Black;
+            oldBalance = Spawner.GetInstance().FriendliesPerEnemies;
+            Spawner.GetInstance().FriendliesPerEnemies = 2;
+        }
+
+        public override void Activate()
+        {
+            Parent.Screen.GDGame.Background = Color.Black;
+            base.Activate();
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
-            PlayerBall player = Parent.Player;
+            PlayerBall player = Parent.Screen.Player;
             ScoreBall ball;
-            foreach (GDComp comp in Parent.Components)
+            foreach (GDComp comp in Parent.Screen.Components)
             {
                 if ((ball = comp as ScoreBall) != null &&
                     ball.ScoreState == ScoreBall.State.Enemy)
@@ -47,19 +55,22 @@ namespace GameDesign_2.States.GameStates
                 }
             }
 
-            if (player.ScoreBar.GetScorePercentage() > agroBorder + percentalMarge ||
-                player.ScoreBar.GetScorePercentage() < agroBorder - percentalMarge)
+            if (player.ScoreBar.GetScorePercentage() > agroBorder + percentalMarge)
             {
-                RemoveState();
+                RemoveState(true);
+            }
+            else if (player.ScoreBar.GetScorePercentage() < agroBorder - percentalMarge)
+            {
+                RemoveState(false);
             }
 
             base.Update(gameTime);
         }
 
-        private void RemoveState()
+        private void RemoveState(bool proceed)
         {
             ScoreBall ball;
-            foreach (GDComp comp in Parent.Components)
+            foreach (GDComp comp in Parent.Screen.Components)
             {
                 if ((ball = comp as ScoreBall) != null)
                 {
@@ -67,8 +78,14 @@ namespace GameDesign_2.States.GameStates
                 }
             }
 
-            Parent.GDGame.Background = Color.CornflowerBlue;
-            Parent.RemoveTopState();
+            Spawner.GetInstance().FriendliesPerEnemies = oldBalance;
+
+            Parent.Screen.GDGame.Background = Color.CornflowerBlue;
+            Parent.PopState();
+            if (proceed)
+            {
+                Parent.Proceed(this);
+            }
         }
     }
 }

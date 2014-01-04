@@ -21,9 +21,9 @@ namespace GameDesign_2.Screens
 
         private QuadTree quadTree;
         private Vector2 worldSize;
-        private List<IState> currentState;
+        private StateMachine stateMachine;
 
-        public GameplayScreen(Game1 game, Vector2 worldSize, int goalScore)
+        public GameplayScreen(Game1 game, Vector2 worldSize)
             : base(game)
         {
             this.worldSize = worldSize;
@@ -38,12 +38,10 @@ namespace GameDesign_2.Screens
             Components.Add(new Wall(GDGame, new Vector2(-10, 0), new Vector2(0, worldSize.Y + 10)));
 
             //Add the player to world.
-            Components.Add(Player = new PlayerBall(GDGame, new Vector2(300, 300), goalScore));
+            Components.Add(Player = new PlayerBall(GDGame, new Vector2(300, 300)));
 
             //Give the camera the new world size.
             GDGame.Camera.WorldSize = worldSize + new Vector2(0, 100);
-
-            currentState = new List<IState>();
         }
 
         public override void Initialize()
@@ -60,16 +58,16 @@ namespace GameDesign_2.Screens
 
         public override void Update(GameTime gameTime)
         {
-            if (currentState.Count > 0)
-            {
-                CurrentState.Update(gameTime);
-            }
-
             //Update the sinusoid graphs.
             Sinusoid.GetInstance().Update(gameTime);
 
             //Update the Spawner.
-            Spawner.GetInstance().Update();
+            Spawner.GetInstance().Update(gameTime);
+
+            if (stateMachine != null)
+            {
+                stateMachine.Update(gameTime);
+            }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
@@ -180,21 +178,21 @@ namespace GameDesign_2.Screens
             Manager.Push(new ResultScreen(GDGame, "Aww, you lost :(\nHit enter to continue."));
         }
 
-        public void Won()
+        public virtual void Won()
         {
             Manager.Pop();
             Manager.Push(new ResultScreen(GDGame, "Yay you won!\nHit enter to continue."));
         }
 
-        public IState CurrentState
+        public StateMachine StateMachine
         {
-            get { return currentState[currentState.Count - 1]; }
-            set { currentState.Add(value); }
+            get { return stateMachine; }
+            set { stateMachine = value; }
         }
 
-        public void RemoveTopState()
+        public Vector2 WorldSize
         {
-            currentState.RemoveAt(currentState.Count - 1);
+            get { return worldSize; }
         }
     }
 }
