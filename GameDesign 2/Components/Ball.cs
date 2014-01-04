@@ -51,5 +51,17 @@ namespace GameDesign_2.Components
 
             base.Unload();
         }
+
+        public override Vector2 HalfSize
+        {
+            get
+            {
+                return base.HalfSize * Scale;
+            }
+            set
+            {
+                base.HalfSize = value;
+            }
+        }
     }
 }

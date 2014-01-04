@@ -64,15 +64,12 @@ namespace GameDesign_2.Components.Player
 
         public override bool CheckCollisionWith(GameTime gameTime, GDComp other)
         {
-            if (other is Wall)
+            if (other is PowerBall)
             {
-                return other.CheckCollisionWith(gameTime, this);
+                return false;
             }
-            else if (other is ScoreBall)
-            {
-                return other.CheckCollisionWith(gameTime, this);
-            }
-            return false;
+
+            return other.CheckCollisionWith(gameTime, this);
         }
 
         public void Move(GameTime gameTime)
@@ -143,18 +140,6 @@ namespace GameDesign_2.Components.Player
             }
 
             base.Update(gameTime);
-        }
-
-        public override Vector2 HalfSize
-        {
-            get
-            {
-                return base.HalfSize * Scale;
-            }
-            set
-            {
-                base.HalfSize = value;
-            }
         }
 
         /// <summary>

@@ -21,7 +21,7 @@ namespace GameDesign_2.Components.Player
 
         //Bar constants.
         private const float MaxPower = 100;
-        private const float PercentPerSecond = 20f;
+        private const float PercentPerSecond = 50f;
         private readonly Vector2 PowerBarScale = new Vector2(0.75f, 0.98f);
 
         //Bar colors.
@@ -49,7 +49,7 @@ namespace GameDesign_2.Components.Player
         public override void Initialize()
         {
             toAdd = 0;
-            Power = 70;
+            Power = 100;
 
             state = ScoreState.Balance;
 
@@ -107,7 +107,7 @@ namespace GameDesign_2.Components.Player
             //Only add if we are below 100 and aren't droppping.
             if (state == ScoreState.Balance && Power + toAdd < 100)
             {
-                const float percentageAddedPerGain = 1;
+                const float percentageAddedPerGain = 2.5f;
 
                 //Calculate the bruto addition.
                 float brutoAddition = percentageAddedPerGain * scoreMultiplier;
@@ -140,7 +140,10 @@ namespace GameDesign_2.Components.Player
             toAdd = -100;
             state = ScoreState.Loss;
 
-            //CREATE A POWER THINGY.
+            //Create the PowerBall.
+            PowerBall temp = new PowerBall(GDGame, playerPos);
+            GDGame.GetActiveScreen().Components.Add(temp);
+            temp.Initialize();
         }
 
         public override void Update(GameTime gameTime)
