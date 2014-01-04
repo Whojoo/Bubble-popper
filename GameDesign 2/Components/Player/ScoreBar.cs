@@ -24,9 +24,9 @@ namespace GameDesign_2.Components.Player
         private const int SecondsPerPointDrop = 5;
         private const int Goal = 100;
         private const float PercentDropByTimeBorder = 1f;
-        private const float PercentPerSecond = 2.5f;
-        //Stop dropping scores after 5 seconds.
-        private const float ScoreDropTimeLimit = 7.5f;
+        private const float PercentPerSecond = 10f;
+        //Stop dropping scores after 3.5 seconds.
+        private const float ScoreDropTimeLimit = 3.5f;
         //Time border for the multipier.
         private const float MultiplierTimeBorder = 2.5f;
 
@@ -101,8 +101,8 @@ namespace GameDesign_2.Components.Player
 
             State = ScoreState.Balance;
 
-            float xScale = HalfSize.X / TextureSize;
-            float yScale = HalfSize.Y / TextureSize;
+            float xScale = HalfSize.X * 2 / TextureSize;
+            float yScale = HalfSize.Y * 2 / TextureSize;
             scale = new Vector2(xScale, yScale);
 
             base.Initialize();
@@ -216,7 +216,7 @@ namespace GameDesign_2.Components.Player
             float halfWidth = vp.Width * 0.5f * 0.8f;
             float halfHeight = vp.Height * 1 / 20;
 
-            return new Vector2(halfWidth, halfHeight);
+            return new Vector2(halfWidth, halfHeight) * 0.5f;
         }
 
         /// <summary>
@@ -373,7 +373,7 @@ namespace GameDesign_2.Components.Player
 
             //Calculate the position for the colored bar.
             Vector2 cBarPos = new Vector2(
-                Position.X - HalfSize.X * 0.5f * ColorBarScale.X,
+                Position.X - HalfSize.X * ColorBarScale.X,
                 Position.Y);
 
             //Calculate the right scale.
