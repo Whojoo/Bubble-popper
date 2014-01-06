@@ -109,21 +109,27 @@ namespace GameDesign_2
                     Sinusoid.GetInstance().GetRandomIndex());
             }
 
-            Game.GetActiveScreen().Components.Add(ball);
-            active.Add(ball);
-            ball.Initialize();
+            try
+            {
+                Game.GetActiveScreen().Components.Add(ball);
+                active.Add(ball);
+                ball.Initialize();
 
-            //Do we need a friendly?
-            if (!isEnemy)
-            {
-                ball.ChangeState(ScoreBall.State.Friendly);
-                friendlies++;
+                //Do we need a friendly?
+                if (!isEnemy)
+                {
+                    ball.ChangeState(ScoreBall.State.Friendly);
+                    friendlies++;
+                }
+                //We need an enemy.
+                else
+                {
+                    ball.ChangeState(ScoreBall.State.Enemy);
+                    enemies++;
+                }
             }
-            //We need an enemy.
-            else
+            catch (ArgumentException e)
             {
-                ball.ChangeState(ScoreBall.State.Enemy);
-                enemies++;
             }
         }
 
