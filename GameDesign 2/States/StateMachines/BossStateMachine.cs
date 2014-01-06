@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using GameDesign_2.Components.Player;
 using GameDesign_2.Screens;
 using GameDesign_2.States.GameStates;
 using Microsoft.Xna.Framework;
@@ -41,6 +42,12 @@ namespace GameDesign_2.States.StateMachines
         {
             //Clear the score stacks.
             Screen.Player.ScoreBar.ClearStacks();
+
+            //Change the score values.
+            PlayerBall player = Screen.Player;
+            const float diffValue = 0.1f;
+            player.ScoreAddedByFriendly -= diffValue;
+            player.ScoreDroppedByEnemy += diffValue;
 
             switch (stateNumber)
             {
