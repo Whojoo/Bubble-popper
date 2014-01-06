@@ -153,19 +153,20 @@ namespace GameDesign_2.Components.Player
             {
                 float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
                 float powerThisFrame = dt * PercentPerSecond;
-                float diffValue;
 
                 //How much do we add?
-                if (toAdd > 0)
+                bool isDone;
+                if (toAdd < 0)
                 {
-                    diffValue = toAdd < powerThisFrame ? toAdd : powerThisFrame;
-                    toAdd -= diffValue;
+                    powerThisFrame *= -1;
+                    isDone = toAdd > powerThisFrame;
                 }
                 else
                 {
-                    diffValue = toAdd > -powerThisFrame ? toAdd : -powerThisFrame;
-                    toAdd -= diffValue;
+                    isDone = toAdd < powerThisFrame;
                 }
+                float diffValue = isDone ? toAdd : powerThisFrame;
+                toAdd -= diffValue;
 
                 //And now add the Power.
                 Power += diffValue;
