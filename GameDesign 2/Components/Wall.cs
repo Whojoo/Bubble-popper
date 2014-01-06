@@ -38,7 +38,7 @@ namespace GameDesign_2.Components
         public override bool CheckCollisionWith(GameTime gameTime, GDComp other)
         {
             //Ignore all walls and powerballs.
-            if (other is Wall || other is PowerBall)
+            if (other is Wall || other is PowerBall || other is ShieldBall)
             {
                 return false;
             }
