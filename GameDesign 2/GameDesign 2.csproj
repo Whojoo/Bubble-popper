@@ -65,12 +65,18 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Components\Ball.cs" />
     <Compile Include="Camera2D.cs" />
     <Compile Include="Components\Player\PlayerBall.cs" />
+    <Compile Include="Components\Player\PowerBar.cs" />
     <Compile Include="Components\Player\ScoreBar.cs" />
+    <Compile Include="Components\PowerBall.cs" />
     <Compile Include="Components\ScoreBall.cs" />
+    <Compile Include="Components\ShieldBall.cs" />
     <Compile Include="Components\SpawnPortal.cs" />
     <Compile Include="Components\Wall.cs" />
     <Compile Include="FPS\DrawingContext.cs" />
@@ -87,6 +93,7 @@
     <Compile Include="QuadTree.cs" />
     <Compile Include="Screens\GameplayScreen.cs" />
     <Compile Include="Screens\GameplayScreens\DynamicsScreen.cs" />
+    <Compile Include="Screens\GameplayScreens\Narrative.cs" />
     <Compile Include="Screens\MenuScreens\MainMenuScreen.cs" />
     <Compile Include="Screens\MenuScreens\ResultScreen.cs" />
     <Compile Include="Screens\Screen.cs" />
@@ -96,8 +103,14 @@
     <Compile Include="Spawner.cs" />
     <Compile Include="States\GameState.cs" />
     <Compile Include="States\GameStates\AgroState.cs" />
+    <Compile Include="States\GameStates\EnrageState.cs" />
     <Compile Include="States\GameStates\RegularState.cs" />
+    <Compile Include="States\GameStates\ShieldState.cs" />
+    <Compile Include="States\GameStates\TransitionState.cs" />
     <Compile Include="States\IState.cs" />
+    <Compile Include="States\StateMachine.cs" />
+    <Compile Include="States\StateMachines\BossStateMachine.cs" />
+    <Compile Include="States\StateMachines\RegularStateMachine.cs" />
     <Compile Include="States\TextState.cs" />
     <Compile Include="Text\MenuEntry.cs" />
     <Compile Include="Text\TextObject.cs" />

@@ -53,6 +53,7 @@ namespace GameDesign_2.States.StateMachines
             {
                 case 0: //To RegularState till 15%.
                     stateNumber++;
+                    PushState(new ShieldState(this));
                     PushState(new RegularState(this, false, 15, 55));
                     Spawner.GetInstance().FriendliesPerEnemies = 3;
                     break;
@@ -71,29 +72,40 @@ namespace GameDesign_2.States.StateMachines
                     stateNumber++;
                     Spawner.GetInstance().FriendliesPerEnemies = 4;
                     break;
-                case 4: //EnrageState.
+                case 4: //Shield State.
                     stateNumber++;
                     PopState();
+                    break;
+                case 5: //EnrageState.
+                    stateNumber++;
                     PushState(new EnrageState(this));
                     break;
-                case 5: //Tough RegularState till 65%.
+                case 6: //Tough RegularState till 65%.
                     stateNumber++;
-                    PushState(new RegularState(this, true, 65, 90));
+                    PushState(new RegularState(this, true, 65));
                     Spawner.GetInstance().FriendliesPerEnemies = 3;
                     break;
-                case 6: //AgroState till 75%. Repeat if below 55%.
+                case 7: //AgroState till 75%. Repeat if below 55%.
                     stateNumber++;
                     PushState(new AgroState(this, 65));
                     break;
-                case 7: //EnrageState.
+                case 8: //Shield State.
+                    stateNumber++;
+                    break;
+                case 9: //EnrageState.
                     stateNumber++;
                     PushState(new EnrageState(this));
                     break;
-                case 8: //Tough RegularState till 90%.
+                case 10: //Tough RegularState till 90%.
                     stateNumber++;
+                    PushState(new RegularState(this, true, 90));
                     Spawner.GetInstance().FriendliesPerEnemies = 2;
                     break;
-                case 9: //AgroState till 100%. Repeat if below 80%.
+                case 11: //Shield State.
+                    stateNumber++;
+                    PopState();
+                    break;
+                case 12: //AgroState till 100%. Repeat if below 80%.
                     stateNumber++;
                     PushState(new AgroState(this, 90));
                     break;

@@ -92,7 +92,7 @@ namespace GameDesign_2.Screens.GameplayScreens
             //Now add some numbers to the sinusoid instance.
             Sinusoid sin = Sinusoid.GetInstance();
             Random randy = new Random(200);
-            const int sinusoids = 20;
+            const int sinusoids = 10;
             for (int i = 0; i < sinusoids; i++)
             {
                 sin.AddGraph((float)randy.NextDouble() + 2.0f, i, (float)randy.NextDouble() + 0.5f);

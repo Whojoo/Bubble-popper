@@ -106,7 +106,7 @@ namespace GameDesign_2.Components
 
             //Are the 2 objects close to eachother?
             if (circleDist.X > (other.HalfSize.X + HalfSize.X) ||
-                circleDist.Y > (other.HalfSize.Y + HalfSize.Y))
+                circleDist.Y > (other.HalfSize.Y + HalfSize.X))
             {
                 return false;
             }
@@ -133,7 +133,7 @@ namespace GameDesign_2.Components
         {
             //Simple collision check using both the circles' radius.
             float distSQ = (position - other.Position).LengthSquared();
-            float radiiSQ = (halfSize.X + other.HalfSize.X) * (halfSize.X + other.HalfSize.X);
+            float radiiSQ = (HalfSize.X + other.HalfSize.X) * (HalfSize.X + other.HalfSize.X);
 
             return distSQ < radiiSQ;
         }

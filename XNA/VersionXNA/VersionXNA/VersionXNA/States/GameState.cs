@@ -23,5 +23,9 @@ namespace GameDesign_2.States
         {
             Spawner.GetInstance().Clear();
         }
+
+        public virtual void Deactivate()
+        {
+        }
     }
 }

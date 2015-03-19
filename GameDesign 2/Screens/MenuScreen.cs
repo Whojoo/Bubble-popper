@@ -44,6 +44,8 @@ namespace GameDesign_2.Screens
             CurrentIndex = 0;
 
             game.Background = Color.Black;
+
+            game.IsMouseVisible = true;
         }
 
         protected virtual void HandleInput(GameTime gameTime)

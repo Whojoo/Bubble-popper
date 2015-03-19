@@ -34,12 +34,21 @@ namespace GameDesign_2.States
             return states[top];
         }
 
+        public bool IsEmpty()
+        {
+            return states.Count == 0;
+        }
+
         /// <summary>
         /// Pushes a new state on the stack.
         /// </summary>
         /// <param name="state">The new state.</param>
         public void PushState(GameState state)
         {
+            if (!IsEmpty())
+            {
+                Peek().Deactivate();
+            }
             states.Add(state);
             top++;
             state.Activate();

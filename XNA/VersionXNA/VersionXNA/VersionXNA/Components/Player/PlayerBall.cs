@@ -10,19 +10,29 @@ namespace GameDesign_2.Components.Player
 {
     public class PlayerBall : Ball
     {
+        public const float ScoreDropDefault = 5f;
+        public const float ScoreAddDefault = 2.5f;
+
         private const float MinRadius = 30;
         private const float MaxRadius = 40;
 
         public ScoreBar ScoreBar { get; private set; }
+        public PowerBar PowerBar { get; private set; }
 
         //Score adds or drops on their default values.
-        private float scoreDroppedByEnemy = 5f;
-        private float scoreAddedByFriendly = 2.5f;
+        private float scoreDroppedByEnemy;
+        private float scoreAddedByFriendly;
 
         public PlayerBall(Game1 game, Vector2 position)
             : base(game, position, MinRadius)
         {
+            scoreDroppedByEnemy = ScoreDropDefault;
+            scoreAddedByFriendly = ScoreAddDefault;
+
+            //Create the bars.
             ScoreBar = new ScoreBar(game);
+            PowerBar = new PowerBar(game);
+
             Color = Color.Blue;
             Scale = 1;
         }
@@ -36,8 +46,9 @@ namespace GameDesign_2.Components.Player
             //Put the mouse back in the screen's center.
             Mouse.SetPosition((int)center.X, (int)center.Y);
 
-            //Add the scoreBar.
+            //Add the bars to the HuD.
             GDGame.GetActiveScreen().HuDComponents.Add(ScoreBar);
+            GDGame.GetActiveScreen().HuDComponents.Add(PowerBar);
 
             base.Initialize();
         }
@@ -48,19 +59,17 @@ namespace GameDesign_2.Components.Player
         public void AddScore()
         {
             ScoreBar.AddScore(scoreAddedByFriendly);
+            PowerBar.LoadPower(ScoreBar.Multiplier);
         }
 
         public override bool CheckCollisionWith(GameTime gameTime, GDComp other)
         {
-            if (other is Wall)
+            if (other is PowerBall)
             {
-                return other.CheckCollisionWith(gameTime, this);
+                return false;
             }
-            else if (other is ScoreBall)
-            {
-                return other.CheckCollisionWith(gameTime, this);
-            }
-            return false;
+
+            return other.CheckCollisionWith(gameTime, this);
         }
 
         public void Move(GameTime gameTime)
@@ -123,19 +132,14 @@ namespace GameDesign_2.Components.Player
                 Scale = 1;
             }
 
-            base.Update(gameTime);
-        }
+            //Power usage logic.
+            MouseState mouse = Mouse.GetState();
+            if (mouse.LeftButton == ButtonState.Pressed)
+            {
+                PowerBar.UsePower(Position);
+            }
 
-        public override Vector2 HalfSize
-        {
-            get
-            {
-                return base.HalfSize * Scale;
-            }
-            set
-            {
-                base.HalfSize = value;
-            }
+            base.Update(gameTime);
         }
 
         /// <summary>

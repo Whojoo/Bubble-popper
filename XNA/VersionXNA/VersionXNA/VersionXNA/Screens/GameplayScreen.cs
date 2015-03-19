@@ -18,6 +18,8 @@ namespace GameDesign_2.Screens
         public PlayerBall Player { get; protected set; }
         private bool debugMode = false;
         private Texture2D quadTreeTex;
+        private bool gameOver;
+        private bool won;
 
         private QuadTree quadTree;
         private Vector2 worldSize;
@@ -42,6 +44,9 @@ namespace GameDesign_2.Screens
 
             //Give the camera the new world size.
             GDGame.Camera.WorldSize = worldSize + new Vector2(0, 100);
+
+            gameOver = won = false;
+            GDGame.IsMouseVisible = false;
         }
 
         public override void Initialize()
@@ -114,6 +119,15 @@ namespace GameDesign_2.Screens
                     Components.RemoveAt(i);
                 }
             }
+
+            if (gameOver)
+            {
+                GameOver();
+            }
+            else if (won)
+            {
+                Won();
+            }
         }
 
         private void CheckCameraChanges(GameTime gameTime)
@@ -174,12 +188,22 @@ namespace GameDesign_2.Screens
 
         public void GameOver()
         {
+            if (!gameOver)
+            {
+                gameOver = true;
+            }
+
             Manager.Pop();
             Manager.Push(new ResultScreen(GDGame, "Aww, you lost :(\nHit enter to continue."));
         }
 
         public virtual void Won()
         {
+            if (!won)
+            {
+                won = true;
+            }
+
             Manager.Pop();
             Manager.Push(new ResultScreen(GDGame, "Yay you won!\nHit enter to continue."));
         }

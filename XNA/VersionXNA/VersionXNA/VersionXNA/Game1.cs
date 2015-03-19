@@ -41,7 +41,6 @@ namespace GameDesign_2
         protected override void Initialize()
         {
             IsFixedTimeStep = false;
-            IsMouseVisible = false;
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
             graphics.SynchronizeWithVerticalRetrace = false;
@@ -67,8 +66,8 @@ namespace GameDesign_2
             drawingContext.GraphicsDevice = spriteBatch.GraphicsDevice;
 
             manager = new ScreenManager(this, new MainMenuScreen(this));
-            manager.Initialize();
             Components.Add(manager);
+            manager.Initialize();
         }
 
         protected override void UnloadContent()

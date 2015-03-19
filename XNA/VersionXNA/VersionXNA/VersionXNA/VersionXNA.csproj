@@ -29,7 +29,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -92,7 +92,9 @@
     <Compile Include="Components\Player\PowerBar.cs" />
     <Compile Include="Components\Player\ScoreBar.cs" />
     <Compile Include="Components\Portal.cs" />
+    <Compile Include="Components\PowerBall.cs" />
     <Compile Include="Components\ScoreBall.cs" />
+    <Compile Include="Components\ShieldBall.cs" />
     <Compile Include="Components\SpawnPortal.cs" />
     <Compile Include="Components\Wall.cs" />
     <Compile Include="FPS\DrawingContext.cs" />
@@ -121,6 +123,7 @@
     <Compile Include="States\GameStates\AgroState.cs" />
     <Compile Include="States\GameStates\EnrageState.cs" />
     <Compile Include="States\GameStates\RegularState.cs" />
+    <Compile Include="States\GameStates\ShieldState.cs" />
     <Compile Include="States\GameStates\TransitionState.cs" />
     <Compile Include="States\IState.cs" />
     <Compile Include="States\StateMachine.cs" />

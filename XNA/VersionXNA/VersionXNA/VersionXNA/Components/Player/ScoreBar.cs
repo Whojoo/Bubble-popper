@@ -25,8 +25,8 @@ namespace GameDesign_2.Components.Player
         private const int Goal = 100;
         private const float PercentDropByTimeBorder = 1f;
         private const float PercentPerSecond = 10f;
-        //Stop dropping scores after 5 seconds.
-        private const float ScoreDropTimeLimit = 7.5f;
+        //Stop dropping scores after 3.5 seconds.
+        private const float ScoreDropTimeLimit = 3.5f;
         //Time border for the multipier.
         private const float MultiplierTimeBorder = 2.5f;
 
@@ -46,7 +46,6 @@ namespace GameDesign_2.Components.Player
         private ScoreState State { get; set; }
 
         private float toAdd;
-        private float toSubtract;
         private float timeCounter;
         private float timeLeft;
         private float scoreDropTimer;
@@ -93,7 +92,6 @@ namespace GameDesign_2.Components.Player
         {
             Score = 5f;
             toAdd = 0;
-            toSubtract = 0;
 
             scoreDropTimer = 0;
 
@@ -101,8 +99,8 @@ namespace GameDesign_2.Components.Player
 
             State = ScoreState.Balance;
 
-            float xScale = HalfSize.X / TextureSize;
-            float yScale = HalfSize.Y / TextureSize;
+            float xScale = HalfSize.X * 2 / TextureSize;
+            float yScale = HalfSize.Y * 2 / TextureSize;
             scale = new Vector2(xScale, yScale);
 
             base.Initialize();
@@ -145,14 +143,12 @@ namespace GameDesign_2.Components.Player
         public void ClearStacks()
         {
             toAdd = 0;
-            toSubtract = 0;
             scoreDropTimer = 0;
         }
 
         public void DropScore(float amount)
         {
             toAdd = 0;
-            toSubtract = 0;
             scoreDropTimer = 0;
 
             Score -= amount;
@@ -202,7 +198,7 @@ namespace GameDesign_2.Components.Player
                 resetMultiplier = true;
             }
 
-            toSubtract += amount;
+            toAdd -= amount;
         }
 
         /// <summary>
@@ -216,7 +212,7 @@ namespace GameDesign_2.Components.Player
             float halfWidth = vp.Width * 0.5f * 0.8f;
             float halfHeight = vp.Height * 1 / 20;
 
-            return new Vector2(halfWidth, halfHeight);
+            return new Vector2(halfWidth, halfHeight) * 0.5f;
         }
 
         /// <summary>
@@ -238,61 +234,60 @@ namespace GameDesign_2.Components.Player
             //Delta Time.
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
             
-            //First calculate how many points max can be add or subtracted this frame.
-            float pointsThisFrame = (PercentPerSecond * dt * multiplier);
-
-            //Are there points to subtract?
-            if (toSubtract > 0)
+            if (toAdd != 0)
             {
-                State = ScoreState.Loss;
+                //First calculate how many points max can be add or subtracted this frame.
+                float pointsThisFrame = (PercentPerSecond * dt);
 
-                float loss = pointsThisFrame;
-                if (toSubtract < pointsThisFrame)
+                //Are we gaining or loosing points?
+                bool isDone;
+                if (toAdd < 0)
                 {
-                    loss = toSubtract;
-                    State = ScoreState.Balance;
-                }
-
-                Score -= loss;
-                toSubtract -= loss;
-
-                //Have we reached the drop limit?
-                scoreDropTimer += dt;
-                if (scoreDropTimer >= ScoreDropTimeLimit)
-                {
-                    toSubtract = 0;
-                }
-            }
-            //Are there points to add?
-            else if (toAdd > 0 && Score < Goal)
-            {
-                //Reset the scoreDropTimer.
-                scoreDropTimer = 0;
-
-                //Do we have to reset the multiplier?
-                if (resetMultiplier)
-                {
-                    pointsThisFrame = (int)(pointsThisFrame / multiplier);
+                    //Reset the multiplier.
                     ResetMultiplier();
+
+                    //Check if these are the last points to subtract.
+                    pointsThisFrame *= -1;
+                    isDone = toAdd > pointsThisFrame;
+
+                    //Change to the appropriate state.
+                    State = ScoreState.Loss;
+
+                    //Don't drop score for to long.
+                    scoreDropTimer += dt;
+                    if (scoreDropTimer >= ScoreDropTimeLimit)
+                    {
+                        ClearStacks();
+                    }
                 }
-
-                State = ScoreState.Gain;
-                float gain = pointsThisFrame;
-
-                if (toAdd < pointsThisFrame)
+                else
                 {
-                    gain = toAdd;
-                    State = ScoreState.Balance;
+                    //Add the multiplier.
+                    pointsThisFrame *= multiplier;
+
+                    //Check if thes are the last points to add.
+                    isDone = toAdd < pointsThisFrame;
+
+                    //Change to the appropiate state.
+                    State = ScoreState.Gain;
+
+                    //Reset the scoreDropTimer.
+                    scoreDropTimer = 0;
                 }
 
-                Score += gain;
-                toAdd -= gain;
+                //Check the value which we add to or subtract from the score.
+                float diffValue = isDone ? toAdd : pointsThisFrame;
+
+                //Change toAdd and the score with score to be added or subtracted this frame.
+                toAdd -= diffValue;
+                Score += diffValue;
             }
             else
             {
                 //Reset the scoreDropTimer.
                 scoreDropTimer = 0;
 
+                //Change to the appropiate state.
                 State = ScoreState.Balance;
             }
 
@@ -312,9 +307,6 @@ namespace GameDesign_2.Components.Player
                 multiplierTimer += dt;
                 if (multiplierTimer >= MultiplierTimeBorder)
                 {
-                    //Empty toAdd if multiplier falls.
-                    toAdd = 0;
-
                     ResetMultiplier();
                 }
 
@@ -373,7 +365,7 @@ namespace GameDesign_2.Components.Player
 
             //Calculate the position for the colored bar.
             Vector2 cBarPos = new Vector2(
-                Position.X - HalfSize.X * 0.5f * ColorBarScale.X,
+                Position.X - HalfSize.X * ColorBarScale.X,
                 Position.Y);
 
             //Calculate the right scale.

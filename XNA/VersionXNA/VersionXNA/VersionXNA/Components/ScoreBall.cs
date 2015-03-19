@@ -105,6 +105,15 @@ namespace GameDesign_2.Components
 
                 return false;
             }
+            else if (other is PowerBall)
+            {
+                if (!Remove && ScoreState == State.Enemy &&
+                    CircleCircleCollision(other))
+                {
+                    Spawner.GetInstance().RemoveBall(this);
+                }
+                return false;
+            }
             else
             {
                 return other.CheckCollisionWith(gameTime, this);
