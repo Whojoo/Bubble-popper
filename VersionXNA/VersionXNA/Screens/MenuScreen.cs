@@ -52,6 +52,20 @@ namespace GameDesign_2.Screens
         {
             KeyboardState current = Keyboard.GetState();
 
+            //Only check for the menu navigation if there is a menu to navigate through.
+            if (Entries.Capacity > 0)
+                HandleNavigation(current);
+
+            //Check for spacebar and return presses.
+            if ((current.IsKeyDown(Keys.Enter) && LastState.IsKeyUp(Keys.Enter)) ||
+                (current.IsKeyDown(Keys.Space) && LastState.IsKeyUp(Keys.Space)))
+            {
+                EntryClicked(CurrentIndex);
+            }
+        }
+
+        private void HandleNavigation(KeyboardState current)
+        {
             //Check for up and down presses.
             if (current.IsKeyDown(Keys.Down) && LastState.IsKeyUp(Keys.Down))
             {
@@ -80,13 +94,6 @@ namespace GameDesign_2.Screens
 
                 //Tell the new entry that it is the active entry now.
                 Entries[CurrentIndex].SetActive(true);
-            }
-
-            //Check for spacebar and return presses.
-            if ((current.IsKeyDown(Keys.Enter) && LastState.IsKeyUp(Keys.Enter)) ||
-                (current.IsKeyDown(Keys.Space) && LastState.IsKeyUp(Keys.Space)))
-            {
-                EntryClicked(CurrentIndex);
             }
         }
 

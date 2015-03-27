@@ -264,7 +264,7 @@ namespace GameDesign_2
             }
             else
             {
-                batch.Draw(tex, Bounds, new Color(color, 0.1f));
+                batch.Draw(tex, Bounds, new Color(color.R, color.G, color.B, 0.1f));
             }
         }
     }
