@@ -13,7 +13,7 @@ namespace GameDesign_2.Screens.GameplayScreens
     public class DynamicsScreen : GameplayScreen
     {
         public DynamicsScreen(Game1 game)
-            : base(game, new Vector2(1840, 1500))
+            : base(game, new Vector2(1840, 1500), Levels.Dynamics)
         {
         }
 
@@ -152,7 +152,7 @@ namespace GameDesign_2.Screens.GameplayScreens
                 sin.AddGraph((float)randy.NextDouble() + 2.0f, i, (float)randy.NextDouble() + 0.5f);
             }
 
-            StateMachine = new RegularStateMachine(this);
+            StateMachine = new RegularStateMachine(this, 4);
             StateMachine.PushState(new RegularState(StateMachine, true, 25, 75));
 
             base.Initialize();

@@ -15,7 +15,14 @@ namespace GameDesign_2.Screens
 {
     public class GameplayScreen : Screen
     {
+        public enum Levels
+        {
+            Dynamics = 1,
+            Narrative
+        }
+
         public PlayerBall Player { get; protected set; }
+        public Levels eCurrentLevel { get; private set; }
         private bool debugMode = false;
         private Texture2D quadTreeTex;
         private bool gameOver;
@@ -25,10 +32,12 @@ namespace GameDesign_2.Screens
         private Vector2 worldSize;
         private StateMachine stateMachine;
 
-        public GameplayScreen(Game1 game, Vector2 worldSize)
+        public GameplayScreen(Game1 game, Vector2 worldSize, Levels currentLevel)
             : base(game)
         {
             this.worldSize = worldSize;
+            eCurrentLevel = currentLevel;
+
             //Make the tree a bit wider for outer walls.
             quadTree = new QuadTree(new Rectangle(
                 -10, -10, (int)worldSize.X + 20, (int)worldSize.Y + 20));
@@ -160,6 +169,9 @@ namespace GameDesign_2.Screens
 
             //Move the camera.
             GDGame.Camera.Position += move;
+
+            //Write to JSON the player's position and current state.
+            GDGame.WriteHeatMapData(Player.Position, (int)eCurrentLevel, stateMachine.GetCurrentState(), -1);
         }
 
         public override void Draw(GameTime gameTime)
@@ -191,6 +203,7 @@ namespace GameDesign_2.Screens
             if (!gameOver)
             {
                 gameOver = true;
+                Manager.GDGame.WriteHeatMapData(Player.Position, (int)eCurrentLevel, stateMachine.GetCurrentState(), stateMachine.GetTotalStates());
             }
 
             Manager.Pop();

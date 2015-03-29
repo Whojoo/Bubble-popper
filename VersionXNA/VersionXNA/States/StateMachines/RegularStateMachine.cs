@@ -13,8 +13,8 @@ namespace GameDesign_2.States.StateMachines
     /// </summary>
     public class RegularStateMachine : StateMachine
     {
-        public RegularStateMachine(GameplayScreen screen)
-            : base(screen)
+        public RegularStateMachine(GameplayScreen screen, int totalScreens)
+            : base(screen, totalScreens)
         {
         }
 
@@ -39,6 +39,9 @@ namespace GameDesign_2.States.StateMachines
                 RegularState temp = (RegularState)caller;
                 PushState(new AgroState(this, temp.AgroBorder));
             }
+
+            //Call the base.
+            base.Proceed(caller);
         }
     }
 }

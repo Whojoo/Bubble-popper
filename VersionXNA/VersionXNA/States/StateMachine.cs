@@ -17,10 +17,16 @@ namespace GameDesign_2.States
         private List<GameState> states;
         private int top;
 
-        public StateMachine(GameplayScreen screen)
+        private int currentState;
+        private int totalStates;
+
+        public StateMachine(GameplayScreen screen, int totalStates)
         {
             Screen = screen;
             states = new List<GameState>(5);
+
+            this.totalStates = totalStates;
+            currentState = 1;
 
             //Start at -1 because the first state will be index 0;
             top = -1;
@@ -82,7 +88,20 @@ namespace GameDesign_2.States
         /// </summary>
         /// <param name="caller">The caller. Can be used as identifier for different
         /// state difficulties.</param>
-        public abstract void Proceed(GameState caller);
+        public virtual void Proceed(GameState caller)
+        {
+            currentState++;
+        }
+
+        public int GetCurrentState()
+        {
+            return currentState;
+        }
+
+        public int GetTotalStates()
+        {
+            return totalStates;
+        }
 
         public virtual void Update(GameTime gameTime)
         {

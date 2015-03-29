@@ -15,7 +15,7 @@ namespace GameDesign_2.Screens.GameplayScreens
         private KeyboardState last;
 
         public Narrative(Game1 game)
-            : base(game, new Vector2(1500, 1500))
+            : base(game, new Vector2(1500, 1500), Levels.Narrative)
         {
         }
 
@@ -98,7 +98,7 @@ namespace GameDesign_2.Screens.GameplayScreens
                 sin.AddGraph((float)randy.NextDouble() + 2.0f, i, (float)randy.NextDouble() + 0.5f);
             }
 
-            StateMachine = new RegularStateMachine(this);
+            StateMachine = new RegularStateMachine(this, 5);
             StateMachine.PushState(new RegularState(StateMachine, false, 25, 50, 75));
 
             spawner.MaximumAlive = 200;

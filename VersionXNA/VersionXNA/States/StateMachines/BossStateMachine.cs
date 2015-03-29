@@ -32,7 +32,7 @@ namespace GameDesign_2.States.StateMachines
         private int stateNumber;
 
         public BossStateMachine(GameplayScreen screen)
-            : base(screen)
+            : base(screen, 12)
         {
             stateNumber = 0;
             PushState(new TransitionState(this));
@@ -91,6 +91,7 @@ namespace GameDesign_2.States.StateMachines
                     break;
                 case 8: //Shield State.
                     stateNumber++;
+                    PushState(new ShieldState(this));
                     break;
                 case 9: //EnrageState.
                     stateNumber++;
@@ -103,7 +104,7 @@ namespace GameDesign_2.States.StateMachines
                     break;
                 case 11: //Shield State.
                     stateNumber++;
-                    PopState();
+                    PushState(new ShieldState(this));
                     break;
                 case 12: //AgroState till 100%. Repeat if below 80%.
                     stateNumber++;
@@ -112,6 +113,9 @@ namespace GameDesign_2.States.StateMachines
                 default:
                     break;
             }
+
+            //Call the base.
+            base.Proceed(caller);
         }
 
         public override void Update(GameTime gameTime)

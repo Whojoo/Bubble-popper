@@ -20,6 +20,7 @@ namespace GameDesign_2
     {
         public Camera2D Camera { get; private set; }
         public Color Background { get; set; }
+        public bool UsingHeatMap { get; set; }
 
         private ScreenManager manager;
 
@@ -27,6 +28,7 @@ namespace GameDesign_2
         private FrameRateDrawer frameRateDrawer = new FrameRateDrawer();
         private FrameRateUpdater frameRateUpdater = new FrameRateUpdater();
         private DrawingContext drawingContext = new DrawingContext();
+        private HeatmapWriter heatmap;
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -40,10 +42,18 @@ namespace GameDesign_2
 
         protected override void Initialize()
         {
+            UsingHeatMap = true;
+
+            if (UsingHeatMap)
+                heatmap = new HeatmapWriter();
+
+            //Double check if we can use the heatmapwriter.
+            UsingHeatMap = heatmap.Isinitialised();
+
             IsFixedTimeStep = false;
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
-            graphics.SynchronizeWithVerticalRetrace = false;
+            //graphics.SynchronizeWithVerticalRetrace = false;
             graphics.ApplyChanges();
             Viewport vp = new Viewport(GraphicsDevice.Viewport.X, GraphicsDevice.Viewport.Y,
                 graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
@@ -90,6 +100,14 @@ namespace GameDesign_2
             spriteBatch.Begin();
             frameRateDrawer.Draw(drawingContext, frameRate);
             spriteBatch.End();
+        }
+
+        public bool WriteHeatMapData(Vector2 position, int level, int diedInPhase, int totalPhases)
+        {
+            if (UsingHeatMap)
+                heatmap.WriteData(position, level, diedInPhase, totalPhases);
+
+            return UsingHeatMap;
         }
 
         public Screen GetActiveScreen()
