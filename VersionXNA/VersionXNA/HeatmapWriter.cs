@@ -17,7 +17,7 @@ namespace GameDesign_2
         {
         }
 
-        public void WriteData(Vector2 position, int level, int diedInPhase, int totalPhases)
+        public void WriteData(Vector2 position, int level, int diedInPhase, int totalPhases, bool died = false)
         {
             //Create the object.
             JsonObject obj = new JsonObject();
@@ -26,16 +26,19 @@ namespace GameDesign_2
             obj.Level = level;
             obj.DiedInPhase = diedInPhase;
             obj.TotalPhases = totalPhases;
+            obj.Died = died;
 
             //Use string json = JsonConvert.SerializeObject(object); to get the object in json format.
             string json = JsonConvert.SerializeObject(obj);
-            Debug.WriteLine(json);
+            
             //Connect with the database.
             var client = new CouchClient("admin", "admin");
             var db = client.GetDatabase("heatmap");
 
             //Now add the object to the database.
             db.CreateDocument(json);
+
+            
         }
 
         public bool Isinitialised()
@@ -43,19 +46,22 @@ namespace GameDesign_2
             var client = new CouchClient("admin", "admin");
             return client.HasDatabase("heatmap");
         }
+    }
 
-        private struct JsonObject
-        {
-            //(X, Y) position using integers.
-            public int X;
-            public int Y;
+    public struct JsonObject
+    {
+        //(X, Y) position using integers.
+        public int X;
+        public int Y;
 
-            //Which level did we play?
-            public int Level;
+        //Which level did we play?
+        public int Level;
 
-            //In which phase did we die?
-            public int DiedInPhase;
-            public int TotalPhases;
-        }
+        //In which phase are we?
+        public int DiedInPhase;
+        public int TotalPhases;
+
+        //Are we dead?
+        public bool Died;
     }
 }

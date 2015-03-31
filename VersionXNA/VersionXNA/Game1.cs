@@ -102,10 +102,10 @@ namespace GameDesign_2
             spriteBatch.End();
         }
 
-        public bool WriteHeatMapData(Vector2 position, int level, int diedInPhase, int totalPhases)
+        public bool WriteHeatMapData(Vector2 position, int level, int diedInPhase, int totalPhases, bool died = false)
         {
             if (UsingHeatMap)
-                heatmap.WriteData(position, level, diedInPhase, totalPhases);
+                heatmap.WriteData(position, level, diedInPhase, totalPhases, died);
 
             return UsingHeatMap;
         }

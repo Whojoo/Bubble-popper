@@ -171,7 +171,7 @@ namespace GameDesign_2.Screens
             GDGame.Camera.Position += move;
 
             //Write to JSON the player's position and current state.
-            GDGame.WriteHeatMapData(Player.Position, (int)eCurrentLevel, stateMachine.GetCurrentState(), -1);
+            GDGame.WriteHeatMapData(Player.Position, (int)eCurrentLevel, stateMachine.GetCurrentState(), stateMachine.GetTotalStates());
         }
 
         public override void Draw(GameTime gameTime)
@@ -203,7 +203,7 @@ namespace GameDesign_2.Screens
             if (!gameOver)
             {
                 gameOver = true;
-                Manager.GDGame.WriteHeatMapData(Player.Position, (int)eCurrentLevel, stateMachine.GetCurrentState(), stateMachine.GetTotalStates());
+                Manager.GDGame.WriteHeatMapData(Player.Position, (int)eCurrentLevel, stateMachine.GetCurrentState(), stateMachine.GetTotalStates(), true);
             }
 
             Manager.Pop();
