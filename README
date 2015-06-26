@@ -1,3 +1,8 @@
-This repository is for one of my school's subjects. 
-The goal for this subject is designing game mechanics and features which make a game fun.
-I however prefer to code stuff. It keeps me motivated and well I still learn tons.
+# Bubblepopper
+Small game in which your mouse has to 'eat' blue bubbles while you avoid the red ones.  
+[Youtube](https://www.youtube.com/watch?v=DwI0u8rPoUE)
+
+# Heatmap
+I added some data to a database so I could create a heatmap for the first level. I wanted to see if people explored the
+level as much as I prefer they do. The outcome is clear that people are not motivated to explore the entire level.  
+![Heatmap](/heatmap.jpg?raw=true "Heatmap")
