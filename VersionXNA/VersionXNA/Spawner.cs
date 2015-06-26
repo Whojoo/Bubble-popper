@@ -138,7 +138,7 @@ namespace GameDesign_2
         /// </summary>
         private void AdeptScoreBallStates()
         {
-            if (active.Count == 0 || enemies == 0)
+            if (active.Count == 0 || enemies <= 0)
             {
                 return;
             }

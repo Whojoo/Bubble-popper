@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using GameDesign_2.Components.Player;
 using GameDesign_2.Screens;
+using GameDesign_2.States.GameStates;
 using Microsoft.Xna.Framework;
 
 namespace GameDesign_2.Components
@@ -19,7 +20,7 @@ namespace GameDesign_2.Components
         private Random randy;
         private float aliveCounter;
 
-        public ShieldBall(Game1 game, Rectangle world)
+        public ShieldBall(Game1 game, Rectangle world, ShieldState parent)
             : base(game, new Vector2(), 0.5f)
         {
             //Modify the color.
@@ -59,6 +60,13 @@ namespace GameDesign_2.Components
             Position = temp;
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            
+
+            base.Update(gameTime);
+        }
+
         public override bool CheckCollisionWith(GameTime gameTime, GDComp other)
         {
             //Respawn if we spawned inside a wall.
@@ -77,7 +85,7 @@ namespace GameDesign_2.Components
                 CircleCircleCollision(player))
             {
                 Spawner.GetInstance().RemoveBall(other as ScoreBall);
-                //player.AddScore();
+                player.AddScore();
             }
 
             //Is the player in the shield?
@@ -127,7 +135,6 @@ namespace GameDesign_2.Components
 
         public override void Draw(GameTime gameTime, Microsoft.Xna.Framework.Graphics.SpriteBatch batch)
         {
-            Console.WriteLine("yay");
             base.Draw(gameTime, batch);
         }
     }

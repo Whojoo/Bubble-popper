@@ -8,8 +8,6 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using LoveSeat;
-using Newtonsoft.Json;
 using GameDesign_2;
 
 namespace Heatmap
@@ -19,9 +17,6 @@ namespace Heatmap
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
-        private Vector2 Level1 = new Vector2(1840, 1500);
-        private Vector2 Level2 = new Vector2(1500, 1500);
-        private Vector2[][] levelArr;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
@@ -40,11 +35,6 @@ namespace Heatmap
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
-            var client = new CouchClient("admin", "admin");
-            var db = client.GetDatabase("heatmap");
-
-            var list = db.GetAllDocuments();
             
 
             base.Initialize();

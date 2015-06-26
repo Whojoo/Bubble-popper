@@ -14,7 +14,7 @@ namespace GameDesign_2.States.GameStates
     /// </summary>
     public class EnrageState : GameState
     {
-        private const float EnrageTime = 10;
+        private const float EnrageTime = 10.0f;
 
         private float enrageTimer;
         private int oldBalance;

@@ -42,13 +42,15 @@ namespace GameDesign_2
 
         protected override void Initialize()
         {
-            UsingHeatMap = true;
+            UsingHeatMap = false;
 
             if (UsingHeatMap)
+            {
                 heatmap = new HeatmapWriter();
 
-            //Double check if we can use the heatmapwriter.
-            UsingHeatMap = heatmap.Isinitialised();
+                //Double check if we can use the heatmapwriter.
+                UsingHeatMap = heatmap.Isinitialised();
+            }
 
             IsFixedTimeStep = false;
             graphics.PreferredBackBufferWidth = 1280;

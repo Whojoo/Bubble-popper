@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Windows Desktop
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionXNA", "VersionXNA\VersionXNA\VersionXNA.csproj", "{CC4EFCFA-312B-4347-AF79-7959CBBC0025}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bubble popper", "VersionXNA\VersionXNA\Bubble popper.csproj", "{CC4EFCFA-312B-4347-AF79-7959CBBC0025}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionXNAContent", "VersionXNA\VersionXNAContent\VersionXNAContent.contentproj", "{BAF528DA-5328-4C0A-A2F4-87CADC4C355F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Heatmap", "Heatmap\Heatmap\Heatmap.csproj", "{3D2DCC2A-AF34-4E87-BF5D-F13439FD2B45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +33,16 @@ Global
 		{BAF528DA-5328-4C0A-A2F4-87CADC4C355F}.Release|Any CPU.ActiveCfg = Release|x86
 		{BAF528DA-5328-4C0A-A2F4-87CADC4C355F}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{BAF528DA-5328-4C0A-A2F4-87CADC4C355F}.Release|x86.ActiveCfg = Release|x86
+		{3D2DCC2A-AF34-4E87-BF5D-F13439FD2B45}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{3D2DCC2A-AF34-4E87-BF5D-F13439FD2B45}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{3D2DCC2A-AF34-4E87-BF5D-F13439FD2B45}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{3D2DCC2A-AF34-4E87-BF5D-F13439FD2B45}.Debug|x86.ActiveCfg = Debug|x86
+		{3D2DCC2A-AF34-4E87-BF5D-F13439FD2B45}.Debug|x86.Build.0 = Debug|x86
+		{3D2DCC2A-AF34-4E87-BF5D-F13439FD2B45}.Release|Any CPU.ActiveCfg = Release|x86
+		{3D2DCC2A-AF34-4E87-BF5D-F13439FD2B45}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{3D2DCC2A-AF34-4E87-BF5D-F13439FD2B45}.Release|Mixed Platforms.Build.0 = Release|x86
+		{3D2DCC2A-AF34-4E87-BF5D-F13439FD2B45}.Release|x86.ActiveCfg = Release|x86
+		{3D2DCC2A-AF34-4E87-BF5D-F13439FD2B45}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

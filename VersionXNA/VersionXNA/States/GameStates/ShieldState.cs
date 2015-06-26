@@ -16,6 +16,7 @@ namespace GameDesign_2.States.GameStates
         private const float StateDuration = 30;
 
         private float timer;
+        private float startScore;
         private int oldBalance;
         private ShieldBall shield;
 
@@ -26,7 +27,7 @@ namespace GameDesign_2.States.GameStates
             Vector2 worldSize = parent.Screen.WorldSize;
             Rectangle world = new Rectangle(0, 0,
                 (int)worldSize.X, (int)worldSize.Y);
-            shield = new ShieldBall(parent.Screen.GDGame, world);
+            shield = new ShieldBall(parent.Screen.GDGame, world, this);
             shield.Initialize();
         }
 
@@ -38,8 +39,11 @@ namespace GameDesign_2.States.GameStates
             Parent.Screen.Components.Add(shield);
             timer = 0;
 
+            //Get the current score.
+            startScore = Parent.Screen.Player.ScoreBar.GetScorePercentage();
+
             ScoreBar bar = Parent.Screen.Player.ScoreBar;
-            //bar.ForceMultiplier(0.001f, StateDuration);
+            bar.ForceMultiplier(0.001f, StateDuration);
 
             base.Activate();
         }
@@ -56,6 +60,11 @@ namespace GameDesign_2.States.GameStates
             PlayerBall player = Parent.Screen.Player;
             ScoreBall ball;
 
+            //Did we pass the agro border?
+            if (player.ScoreBar.GetScorePercentage() > startScore + PercentalMarge)
+            {
+                RemoveState(true);
+            }
 
             //Timer.
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -99,6 +108,10 @@ namespace GameDesign_2.States.GameStates
                     ball.Target = null;
                 }
             }
+
+            Parent.Screen.Player.ScoreBar.ResetMultiplier();
+
+            Parent.Screen.Components.Remove(shield);
 
             Spawner.GetInstance().FriendliesPerEnemies = oldBalance;
 

@@ -15,6 +15,8 @@ namespace GameDesign_2.Screens
 {
     public class GameplayScreen : Screen
     {
+        private const float TimeBetweenHeatmapWrites = 0.2f;
+
         public enum Levels
         {
             Dynamics = 1,
@@ -28,6 +30,7 @@ namespace GameDesign_2.Screens
         private bool gameOver;
         private bool won;
 
+        private float heatmapWriteTimer;
         private QuadTree quadTree;
         private Vector2 worldSize;
         private StateMachine stateMachine;
@@ -37,6 +40,8 @@ namespace GameDesign_2.Screens
         {
             this.worldSize = worldSize;
             eCurrentLevel = currentLevel;
+
+            heatmapWriteTimer = 0;
 
             //Make the tree a bit wider for outer walls.
             quadTree = new QuadTree(new Rectangle(
@@ -72,6 +77,14 @@ namespace GameDesign_2.Screens
 
         public override void Update(GameTime gameTime)
         {
+            //Write to JSON the player's position and current state.
+            heatmapWriteTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (heatmapWriteTimer > TimeBetweenHeatmapWrites)
+            {
+                GDGame.WriteHeatMapData(Player.Position, (int)eCurrentLevel, stateMachine.GetCurrentState(), stateMachine.GetTotalStates());
+                heatmapWriteTimer -= TimeBetweenHeatmapWrites;
+            }
+
             //Update the sinusoid graphs.
             Sinusoid.GetInstance().Update(gameTime);
 
@@ -169,9 +182,6 @@ namespace GameDesign_2.Screens
 
             //Move the camera.
             GDGame.Camera.Position += move;
-
-            //Write to JSON the player's position and current state.
-            GDGame.WriteHeatMapData(Player.Position, (int)eCurrentLevel, stateMachine.GetCurrentState(), stateMachine.GetTotalStates());
         }
 
         public override void Draw(GameTime gameTime)

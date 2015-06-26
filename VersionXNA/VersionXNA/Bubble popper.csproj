@@ -161,8 +161,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VersionXNAContent\VersionXNAContent.contentproj">
-      <Name>VersionXNAContent</Name>
+      <Name>VersionXNAContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
+      <Project>{BAF528DA-5328-4C0A-A2F4-87CADC4C355F}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

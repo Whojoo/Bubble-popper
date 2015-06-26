@@ -170,7 +170,7 @@ namespace GameDesign_2.Components.Player
             return Score;
         }
 
-        private void ResetMultiplier()
+        public void ResetMultiplier()
         {
             multiplierTimer = 0;
             multiplier = 1;
